@@ -101,3 +101,10 @@ Los SVG pasaron exportación en la ronda previa, pero la aprobación visual sigu
 - [x] Ajustado marco de las cuatro variantes horizontales de 690×256 a 610×240, conservando la geometría original de los nodos interiores: menos espacio muerto alrededor del logotipo.
 - [x] Reescaladas y centradas las doce instancias vinculadas en el tablero QA (`12:27`): horizontal ~326px, isotipo ~236px, vertical ~300px de ancho por tarjeta.
 - [ ] Revisar visualmente este nuevo tablero contra la referencia maestra. El ajuste corrige presentación y proporción aparente, pero no certifica fidelidad final de tipografía ni ilustración.
+
+
+## Corrección de contraste oscuro — 2026-10-21
+
+- [x] `Tema=Oscuro` horizontal (`5:47`) y vertical (`9:79`): «Congregación» en blanco puro `#FFFFFF`, «Mi» en dorado cálido; contraste sobre fondo azul marino.
+- [x] Cambios aplicados en componentes maestros; las instancias vinculadas se actualizan automáticamente.
+- [ ] Revisión visual posterior en iPad, antes de aprobar masters.
