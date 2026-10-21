@@ -108,3 +108,10 @@ Los SVG pasaron exportación en la ronda previa, pero la aprobación visual sigu
 - [x] `Tema=Oscuro` horizontal (`5:47`) y vertical (`9:79`): «Congregación» en blanco puro `#FFFFFF`, «Mi» en dorado cálido; contraste sobre fondo azul marino.
 - [x] Cambios aplicados en componentes maestros; las instancias vinculadas se actualizan automáticamente.
 - [ ] Revisión visual posterior en iPad, antes de aprobar masters.
+
+
+## Revisión final preparatoria — 2026-10-21
+- [x] Rotulado el tablero comparativo de 12 instancias con columnas Color / Oscuro / Negro / Blanco y filas Horizontal / Isotipo / Vertical (Figma `12:27`).
+- [x] Marcador de referencia `6:2` identificado como **PENDIENTE**, bloqueado para evitar confundirlo con el JPG real.
+- [ ] Subida de imagen maestra: probada nuevamente pero **no se completó** (el entorno no puede resolver `mcp.figma.com`). No afirmar que está incrustada.
+- [ ] Validar apariencia visual definitiva y tamaños pequeños con la referencia maestra.
