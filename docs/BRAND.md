@@ -55,3 +55,15 @@ Archivo: https://www.figma.com/design/RJoeAJYlYDBLqIDR7Ef45X
 - [ ] Crear especímenes comparativos de instancias y aprobar máster final.
 
 El logotipo sigue siendo **reconstrucción preliminar editable**, no reproducción final certificada.
+
+
+## Pulido vectorial — 2026-10-21 (revisión 2)
+
+- [x] Portada del primer frame: se retiró el arte obsoleto y se insertó instancia vinculada del componente principal Figma (`8:34`).
+- [x] Añadidas líneas de texto inclinadas a las cuatro variantes monocromáticas (logotipo e isotipo), usando tinta única.
+- [x] Sombras vectoriales geométricas discretas bajo las tres notas en las cuatro variantes cromáticas (logotipo e isotipo). Formas editables SVG-safe con desplazamiento y opacidad, sin blur.
+- [x] Tipografía de los cuatro logotipos: Nunito Sans ExtraBold (propuesta aún por validar visualmente).
+- [ ] Revisión visual / captura de los ocho másteres; comprobar orden de capas, exportación SVG, tamaños pequeños y ajuste tipográfico.
+- [ ] Imagen aprobada sin insertar todavía en Figma por bloqueo anterior de subida; confirmar fidelidad del trazado cuando esté disponible.
+
+**Estado:** cambios guardados en Figma, pendientes de QA y aprobación visual; no afirmar que el logotipo final está aprobado.
