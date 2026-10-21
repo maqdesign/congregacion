@@ -20,3 +20,14 @@ Próximo: revisar legibilidad/contraste y densidad móvil; sustituir los datos i
 - La variante V1 se conserva como historial de exploración, V2 es la dirección actual.
 - Contratos canónicos Holoteles: cuenta/congregación/rol/contexto en Core; Reuniones y Servicio alimentan tarjetas según autorización. Revisar NEXO antes de implementar.
 - Pendientes: QA visual real en dispositivo, revisar contraste y escala tipográfica; conectar contratos cuando estén listos y cuando haya acceso autorizado.
+
+
+## V3 · Tablero de relevancia dinámica · 2026-10-21
+
+[Figma V3 — concepto desplazable](https://www.figma.com/design/RJoeAJYlYDBLqIDR7Ef45X?node-id=24-313), 390×1360.
+
+- Se muestra información resumida antes de cada clic: evento prioritario, reunión de hoy, asignaciones, limpieza, anuncios, salidas para predicar e informe.
+- Jerarquía adaptativa: evento próximo relevante (p. ej., asamblea de esta semana), reunión de hoy, compromiso personal inminente, novedades vigentes, resto cronológico. No hay prioridad fija de asamblea por encima de todo: depende del momento, pertenencia y urgencia real.
+- Mismo encabezado de identidad + búsqueda + Cuenta Holoteles arriba; abajo Tablero, Reuniones, Servicio, Informe.
+- Los textos como «Fecha y lugar por confirmar» son estados ilustrativos/plantillas. **No hay datos reales ni conexión al backend.** No atribuir fecha ni asistencia al usuario sin registros verificados.
+- Propuesta de motor futuro: clasificar por vigencia, ventana temporal, audiencia/autorización y relevancia personal; mostrar solo elementos permitidos; resumen y acción de detalles, con estados vacíos, caducados y offline.
