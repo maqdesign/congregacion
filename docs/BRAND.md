@@ -94,3 +94,10 @@ El logotipo sigue siendo **reconstrucción preliminar editable**, no reproducci�
 - [ ] La referencia original Figma `6:2` sigue con relleno sólido provisional (no foto cargada).
 
 Los SVG pasaron exportación en la ronda previa, pero la aprobación visual sigue pendiente.
+
+
+## Ajuste de presentación tras revisión en iPad — 2026-10-21
+
+- [x] Ajustado marco de las cuatro variantes horizontales de 690×256 a 610×240, conservando la geometría original de los nodos interiores: menos espacio muerto alrededor del logotipo.
+- [x] Reescaladas y centradas las doce instancias vinculadas en el tablero QA (`12:27`): horizontal ~326px, isotipo ~236px, vertical ~300px de ancho por tarjeta.
+- [ ] Revisar visualmente este nuevo tablero contra la referencia maestra. El ajuste corrige presentación y proporción aparente, pero no certifica fidelidad final de tipografía ni ilustración.
