@@ -40,3 +40,18 @@ Archivo: https://www.figma.com/design/RJoeAJYlYDBLqIDR7Ef45X
 - Conjunto de variantes **Mi Congregación / Isotipo** (Figma node `5:159`): Tema=Color, Oscuro, Negro, Blanco.
 - Las variantes Negro/Blanco usan solamente `#000000` o `#FFFFFF` con vacíos transparentes, sin degradados ni tonos grises.
 - **Estado: COMPONENTES INICIALES REUTILIZABLES, NO MÁSTER FINAL.** Persisten dos deudas: poner la imagen aprobada en el Figma para cotejo directo y ajustar fidelidad del trazado/tipografía a ese original. No representar estos vectores como reproducción exacta del arte aprobado.
+
+
+## Checklist de pulido — revisión 2026-10-21
+
+- [x] Dos conjuntos Figma reutilizables: logotipo e isotipo, 4 temas cada uno.
+- [x] Corregir orientación de 20 trazos de texto en 4 variantes a color/oscuro: papel principal -4°, secundario +6°; coherentes con sus respectivos papeles.
+- [x] Reservar un nodo dedicado a la referencia aprobada en Figma (`6:2`).
+- [ ] **Subir realmente la foto original**: la URL de carga fue emitida, pero el envío desde el entorno falló por falta de resolución de red a mcp.figma.com. El nodo de referencia sigue sin foto; no considerar terminado.
+- [ ] Verificar papel + trazos y alinear ópticamente a la imagen maestra al 100%.
+- [ ] Refinar ubicación de chinchetas, siluetas de personas y tipografía.
+- [ ] Inspección visual de 8 variantes e icono a 32px.
+- [ ] Comprobar que negro sobre blanco y blanco sobre negro no tengan grises ni falsas transparencias.
+- [ ] Crear especímenes comparativos de instancias y aprobar máster final.
+
+El logotipo sigue siendo **reconstrucción preliminar editable**, no reproducción final certificada.
