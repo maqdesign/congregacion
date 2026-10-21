@@ -30,3 +30,13 @@ También isotipos solos correspondientes, favicon y tamaños PWA.
 
 ## Criterios de aceptación
 Imagen maestra visible en Figma; vectors fieles y editables; las cuatro variantes; icono legible a 32 px; proporciones, espaciados y contraste verificados; QA visual antes de proclamar arte final.
+
+
+## Figma — Componentes reutilizables (2026-10-21)
+
+Archivo: https://www.figma.com/design/RJoeAJYlYDBLqIDR7Ef45X
+
+- Conjunto de variantes **Mi Congregación / Logotipo** (Figma node `5:158`): Tema=Color, Oscuro, Negro, Blanco.
+- Conjunto de variantes **Mi Congregación / Isotipo** (Figma node `5:159`): Tema=Color, Oscuro, Negro, Blanco.
+- Las variantes Negro/Blanco usan solamente `#000000` o `#FFFFFF` con vacíos transparentes, sin degradados ni tonos grises.
+- **Estado: COMPONENTES INICIALES REUTILIZABLES, NO MÁSTER FINAL.** Persisten dos deudas: poner la imagen aprobada en el Figma para cotejo directo y ajustar fidelidad del trazado/tipografía a ese original. No representar estos vectores como reproducción exacta del arte aprobado.
