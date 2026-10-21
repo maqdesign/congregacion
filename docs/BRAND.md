@@ -67,3 +67,10 @@ El logotipo sigue siendo **reconstrucción preliminar editable**, no reproducci�
 - [ ] Imagen aprobada sin insertar todavía en Figma por bloqueo anterior de subida; confirmar fidelidad del trazado cuando esté disponible.
 
 **Estado:** cambios guardados en Figma, pendientes de QA y aprobación visual; no afirmar que el logotipo final está aprobado.
+
+
+## Proporciones y composición vertical — 2026-10-21
+
+- [x] Reequilibradas las cuatro variantes del componente horizontal `Mi Congregación / Logotipo`: isotipo reducido de 256 a ~187 px; tipografía ampliada a 72 px (Mi) y 49 px (Congregación), con menos distancia entre símbolo y nombre.
+- [x] Creado conjunto reutilizable `Mi Congregación / Logotipo vertical` (Figma node `9:152`), cuatro variantes `Tema=Color, Oscuro, Negro, Blanco`. Símbolo centrado arriba y texto centrado abajo.
+- [ ] Cotejar proporciones exactas con referencia aprobada y revisar render/exportación SVG en Figma.
