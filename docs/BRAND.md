@@ -74,3 +74,13 @@ El logotipo sigue siendo **reconstrucción preliminar editable**, no reproducci�
 - [x] Reequilibradas las cuatro variantes del componente horizontal `Mi Congregación / Logotipo`: isotipo reducido de 256 a ~187 px; tipografía ampliada a 72 px (Mi) y 49 px (Congregación), con menos distancia entre símbolo y nombre.
 - [x] Creado conjunto reutilizable `Mi Congregación / Logotipo vertical` (Figma node `9:152`), cuatro variantes `Tema=Color, Oscuro, Negro, Blanco`. Símbolo centrado arriba y texto centrado abajo.
 - [ ] Cotejar proporciones exactas con referencia aprobada y revisar render/exportación SVG en Figma.
+
+
+## QA técnico de variantes — 2026-10-21
+
+- [x] Auditoría estructural: **12 variantes** en 3 sets (horizontal, isotipo, vertical), 4 temas en cada set.
+- [x] Exportación real `node.exportAsync({format:'SVG'})` aprobada para las 12 variantes (cabecera `<svg`; tamaños ~1.5–13.3 KB). Es validación de exportación, **no prueba visual completa**.
+- [x] Auditoría de los seis másteres monocromáticos: solo RGB 0,0,0 o solo RGB 255,255,255, respectivamente; no tonos grises.
+- [x] Nuevo ajuste horizontal: `Congregación` sube a Nunito Sans ExtraBold **55 px** (ancho ~358 px); el isotipo se mantiene ~187 px. Relación símbolo/ancho de palabra ~0.52, más próxima a la referencia (~0.48); aún requiere revisión óptica.
+- [ ] Comparación pixel/visual real con imagen aprobada en la misma mesa de trabajo: **no completada**. La subida volvió a fallar porque el entorno no resuelve `mcp.figma.com`. El rectángulo `6:2` continúa siendo marcador, no fotografía incrustada.
+- [ ] QA visual de render y tamaños pequeños; no aprobar arte final hasta completar.
