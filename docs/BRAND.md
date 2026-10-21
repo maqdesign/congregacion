@@ -84,3 +84,13 @@ El logotipo sigue siendo **reconstrucción preliminar editable**, no reproducci�
 - [x] Nuevo ajuste horizontal: `Congregación` sube a Nunito Sans ExtraBold **55 px** (ancho ~358 px); el isotipo se mantiene ~187 px. Relación símbolo/ancho de palabra ~0.52, más próxima a la referencia (~0.48); aún requiere revisión óptica.
 - [ ] Comparación pixel/visual real con imagen aprobada en la misma mesa de trabajo: **no completada**. La subida volvió a fallar porque el entorno no resuelve `mcp.figma.com`. El rectángulo `6:2` continúa siendo marcador, no fotografía incrustada.
 - [ ] QA visual de render y tamaños pequeños; no aprobar arte final hasta completar.
+
+
+## Revisión visual en Figma — 2026-10-21 (continuación)
+
+- [x] Nuevo tablero **03 · QA de marca · 12 instancias** (Figma `12:27`) con 12 instancias enlazadas en una matriz 3 × 4: horizontal, isotipo y vertical × color, oscuro, negro y blanco.
+- [x] Fondos claros/oscuros para comparar contraste, sin duplicar ni desvincular los masters.
+- [ ] Analizar/renderizar el tablero completo y contrastar con imagen aprobada para validación óptica definitiva.
+- [ ] La referencia original Figma `6:2` sigue con relleno sólido provisional (no foto cargada).
+
+Los SVG pasaron exportación en la ronda previa, pero la aprobación visual sigue pendiente.
