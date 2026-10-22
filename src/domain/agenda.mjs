@@ -133,6 +133,6 @@ export function projectAgenda({context, occurrences = [], activities = [], filte
 }
 
 /** El Tablero muestra el horario vigente para una fecha, nunca la versión futura. */
-export function currentSchedule({context, schedules = [], onDate}) {
-  return expandPublishedSchedules({context, schedules, from:onDate, to:onDate});
+export function currentSchedule({context, schedules = [], exceptions = [], onDate}) {
+  return expandPublishedSchedules({context, schedules, exceptions, from:onDate, to:onDate});
 }
