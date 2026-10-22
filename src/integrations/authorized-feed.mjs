@@ -18,7 +18,7 @@ export class AgendaUnavailableError extends Error {
 }
 const invalid = code => { throw new AgendaUnavailableError(code); };
 const isObject = x => x !== null && typeof x === "object" && !Array.isArray(x);
-const isTime = x => typeof x === "string" && /^([01]\\d|2[0-3]):[0-5]\\d$/.test(x);
+const isTime = x => typeof x === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(x);
 const stamp = x => typeof x === "string" ? Date.parse(x) : NaN;
 function isTimezone(x) {
   if (typeof x !== "string" || x.length > 80) return false;
