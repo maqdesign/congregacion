@@ -1,0 +1,19 @@
+{
+  "name": "Mi Congregación",
+  "short_name": "Mi Congregación",
+  "description": "Tablero y agenda de tu congregación",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F7F4F0",
+  "theme_color": "#182F4B",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
