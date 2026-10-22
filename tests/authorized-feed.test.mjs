@@ -43,7 +43,7 @@ test("fetch: GET sin caché, credenciales del mismo origen y sin IDs de usuario"
  let request;
  const fetchImpl=async(url,options)=>{request={url,options};return {ok:true,status:200,headers:{get:k=>k==="content-type"?"application/json":null},text:async()=>JSON.stringify(envelope)}};
  const r=await loadAuthorizedAgenda({...args,fetchImpl});
- assert.equal(r.items.length,2);assert.match(request.url,/^\\/api\\/congregation\\/agenda\\?from=/);
+ assert.equal(r.items.length,2);assert.equal(request.url.startsWith("/api/congregation/agenda?from="),true);
  assert.equal(request.options.credentials,"same-origin");assert.equal(request.options.cache,"no-store");
  assert.equal(request.url.includes("person-1"),false);assert.equal(request.url.includes("org-synthetic"),false);
 });
