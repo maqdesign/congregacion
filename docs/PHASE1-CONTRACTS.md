@@ -31,7 +31,7 @@ Filtros UI: `todo`, `reuniones`, `servicio`, `mis_asignaciones`. Eventos y limpi
 - `currentSchedule`: horario vigente para una fecha.
 - `projectAgenda`: filtra actividades ya autorizadas y asignaciones de la persona verificada.
 
-Ejecutar en un checkout de la rama: `node --test tests/agenda.test.mjs` (Node >=18). **No se afirma PASS sin ejecución real**.
+**Validación realizada:** ejecuté los 10 cuerpos de prueba del archivo comprometido en un runtime JavaScript aislado, con adaptador de aserciones equivalente para `equal`, `deepEqual` y `throws`: **10/10 PASS**. En la primera ejecución se detectó y corrigió que `currentSchedule` omitía pasar las excepciones; segunda ejecución 10/10. **Esto NO sustituye ejecutar `node --test tests/agenda.test.mjs` en un checkout real** (Node >=18), ni valida integración, TypeScript, compilación de app o RLS. Queda pendiente esa ejecución.
 
 ## Gates y siguientes responsables
 
