@@ -11,7 +11,7 @@ Fecha: 2026-10-23. Fuente: `maqdesign/holoteles/docs/ACCOUNT-SSO-ONBOARDING-STAN
 - No se muestra formulario de contraseña si la autoridad canónica no está configurada.
 
 ## DEV opcional en producción
-- Activar en Configuración → Modo desarrollo, o visitar `?dev=1`. Desactivar con la preferencia o `?dev=0`.
+- Activar desde el **menú de usuario → Modo de la aplicación → DEV · Pruebas**. Volver desde el mismo menú con **Normal**. No es necesario editar la URL. El ajuste es propio de la pestaña.
 - Estado guardado en `sessionStorage`, limitado al navegador/pestaña; **no es un entorno backend aislado** ni un nuevo deployment.
 - DEV **sí muestra fixtures sintéticos interactivos**: se importan dinámicamente únicamente al activar DEV; no contienen datos familiares ni generan permisos. Las funciones privadas siguen desactivadas.
 - Laboratorio visual de **13 escenarios**: todo conectado, visitante, cuenta sin congregación, sin permisos, agenda vacía, sin conexión, cargando, cambios/cancelaciones, sin asignaciones, registro pendiente, sesión vencida, acceso revocado y error. Incluye filtros de agenda, calendario navegable, selección de día, actividades añadidas solo en memoria, marcar asignación como hecha (simulado), simulación de ingreso/registro/salida.
