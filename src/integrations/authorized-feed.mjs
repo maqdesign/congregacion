@@ -62,6 +62,7 @@ export function projectAuthorizedFeed({envelope,context,from,to,now=Date.now(),f
   if (exceptions.some(x=>!["reuniones","servicio"].includes(x.sourceApp) ||
       !validDate(x.date))) invalid("invalid-records");
   if (activities.some(x=>!validDate(x.date) || !isTime(x.time))) invalid("invalid-records");
+  if ([...schedules,...exceptions,...activities].some(x=>x.personalDelivery === true || Object.prototype.hasOwnProperty.call(x,'personId')) || activities.some(x=>x.category === 'asignaciones')) invalid('invalid-records');
   const scheduleById=new Map(schedules.map(x=>[x.id,x]));
   if (exceptions.some(x=>!scheduleById.has(x.scheduleId) ||
       scheduleById.get(x.scheduleId).sourceApp !== x.sourceApp)) invalid("invalid-records");
