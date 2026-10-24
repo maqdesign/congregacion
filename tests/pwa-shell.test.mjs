@@ -20,7 +20,8 @@ test("only public first-party shell assets are cacheable",()=>{
  assert.doesNotMatch(sw,/\/api\/|service_role|localStorage|access_token|refresh_token/);
 });
 test("updates are opt-in and do not reload while user is working",()=>{
- assert.doesNotMatch(sw,/install"[\s\S]{0,150}skipWaiting/);
+ const install=sw.slice(sw.indexOf('self.addEventListener("install"'),sw.indexOf('self.addEventListener("activate"'));
+ assert.doesNotMatch(install,/self\.skipWaiting\(\)/);
  assert.match(sw,/event.data\?\.type==="ACTIVATE_UPDATE"/);
  assert.match(ui,/registration.waiting.postMessage\(\{type:"ACTIVATE_UPDATE"\}\)/);
  assert.match(ui,/if\(updateRequested\)location.reload\(\)/);
