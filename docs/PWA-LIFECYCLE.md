@@ -9,8 +9,11 @@
 - El cambio de idioma en Configuración se refleja en los avisos. La app usa el idioma por dominio si no hay preferencia manual.
 
 ## QA y límites
-- Prueba V8 con service worker simulado: parseo PASS, instalación de 12 recursos públicos PASS, no intercepción de ruta privada PASS, fallback offline `/index.html` PASS, no activación automática PASS, activación tras mensaje del usuario PASS.
+- Prueba V8 con service worker simulado: parseo PASS, instalación de 12 recursos públicos PASS en la versión anterior; el nuevo caché v2 añade el módulo de avisos y requiere nueva verificación, no intercepción de ruta privada PASS, fallback offline `/index.html` PASS, no activación automática PASS, activación tras mensaje del usuario PASS.
 - `tests/pwa-shell.test.mjs` y prueba anterior `tests/account-shell.test.mjs` actualizada; ejecución Node completa y Safari físico pendientes.
 - **No es una PWA de sincronización offline**. La agenda privada, el login, permisos y la sincronización siguen pendientes de Core. El modo DEV sí permite explorar datos ficticios sin red.
 - Futuras versiones deben actualizar el identificador `CACHE` de `app/sw.js` cuando cambie el shell; sin ello el cache-first de recursos estáticos conservaría archivos antiguos.
 - No almacenar jamás endpoints Auth/PostgREST ni datos de cuentas en el worker. Antes de habilitar Auth real, revisar CSP, sesiones y comportamiento offline.
+
+## Corrección v2 · 24 de octubre de 2026
+El caché inicial no incluía `pwa-shell.mjs`, lo que podía impedir que se mostraran los avisos al abrir la app completamente sin conexión. Se incorporó al precache y se cambió la clave a `mi-congregacion-shell-v2-20261024` para que el Service Worker instale una revisión nueva. No se alteró el límite de datos públicos ni la actualización voluntaria.
