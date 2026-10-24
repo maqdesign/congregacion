@@ -33,7 +33,7 @@ test("re-render moves keyboard focus to next onboarding step",()=>{
  assert.match(html,/\.fixture-onboarding button\{min-height:44px\}/);
 });
 test("PWA offline installation precaches lifecycle script and a new version key",()=>{
- assert.match(sw,/mi-congregacion-shell-v2-20261024/);
+ assert.match(sw,/mi-congregacion-shell-v3-20261024/);
  assert.match(sw,/"\/pwa-shell\.mjs"/);
  assert.match(sw,/if\(!STATIC.has\(url.pathname\)\|\|url.search\)return/);
 });
