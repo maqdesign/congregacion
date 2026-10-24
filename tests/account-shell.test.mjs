@@ -28,7 +28,9 @@ test("all referenced Lucide symbols exist, especially formerly invisible search/
 test("DEV is explicit and isolated from real account data",()=>{
  assert.match(js,/sessionStorage\.getItem\(devKey\)/);
  assert.match(js,/devParams\.get\("dev"\)==="1"/);
- assert.match(html,/Pruebas de interfaz · Sin datos ni sesión real/);
+ assert.match(html,/Datos ficticios · Sin sesión ni sincronización real/);
+ assert.match(html,/src="\/dev-ui\.mjs"/);
+ assert.match(html,/src="\/pwa-shell\.mjs"/);
  assert.match(read("holoteles-auth-config.mjs"),/enabled:false/);
  assert.match(read("holoteles-auth-config.mjs"),/allowProduction:false/);
 });
