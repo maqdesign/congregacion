@@ -1,7 +1,8 @@
 import {HOLOTELES_AUTH_CONFIG as config} from "./holoteles-auth-config.mjs";
 import {createHolotelesAccountAdapter} from "./holoteles-account-adapter.mjs";
+import {createAccountPrivacyGate} from "./account-privacy-gate.mjs";
 const $=id=>document.getElementById(id);
-let adapter=null,activeMode="login",busy=false;
+let adapter=null,activeMode="login",busy=false,generation=0,gate=null;
 const safeMessage=(key)=>document.documentElement.lang==="en"?({
  pending:"Holoteles Core has not enabled sign-in for this app yet.",
  loading:"Connecting to Holoteles…",
@@ -28,8 +29,39 @@ function configAllowed(){
  const authTest=new URLSearchParams(location.search).get("authTest")==="1";
  return devAllowed()?authTest:config.allowProduction===true;
 }
+function openAccess(mode){
+ showMode(mode);
+ $("accountDialog").showModal();
+}
+function hideAccountData(){
+ $("connectedAccount").hidden=true;
+ $("accountForm").hidden=false;
+ $("verifiedEmail").textContent="";
+ $("authPassword").value="";
+ $("authEmail").value="";
+ $("givenName").value="";
+ $("familyName").value="";
+}
+function lockAccount(message=""){
+ generation++;
+ hideAccountData();
+ gate?.lock();
+ if(message)gate?.notice(message);
+}
+async function refreshVerified(){
+ const current=++generation;
+ try{
+  const user=await adapter.getVerifiedUser();
+  if(current!==generation)return;
+  if(user)showVerified(user);
+  else lockAccount();
+ }catch{
+  if(current===generation)lockAccount();
+ }
+}
 async function initializeAuth(){
  if(adapter||!configAllowed())return;
+ if(!gate){gate=createAccountPrivacyGate(document,{onLogin:()=>openAccess("login"),onSignup:()=>openAccess("signup")});lockAccount()}
  try{
   const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2.90.0");
   const client=createClient(config.supabaseUrl,config.publishableKey,{
@@ -39,13 +71,15 @@ async function initializeAuth(){
   adapter=createHolotelesAccountAdapter(client);
   $("accountForm").hidden=false;
   $("accountDialog").querySelector(".auth-status").hidden=true;
-  try{
-   const user=await adapter.getVerifiedUser();
-   if(user)showVerified(user);
-  }catch{showStatus(safeMessage("pending"))}
+  client.auth.onAuthStateChange?.((event)=>{
+   if(event==="SIGNED_OUT"||event==="USER_DELETED")lockAccount();
+   else if(event==="SIGNED_IN"||event==="TOKEN_REFRESHED")void refreshVerified();
+  });
+  await refreshVerified();
  }catch{showStatus(safeMessage("error"))}
 }
 function showVerified(user){
+ gate?.unlock();
  $("accountForm").hidden=true;
  $("connectedAccount").hidden=false;
  $("verifiedEmail").textContent=user.email||"";
@@ -69,8 +103,9 @@ $("accountForm").addEventListener("submit",async event=>{
    await adapter.signUp({email,password,givenName:$("givenName").value,familyName:$("familyName").value,redirectTo:location.origin});
    showStatus(safeMessage("confirm"));
   }else{
+   const current=++generation;
    const user=await adapter.signIn({email,password});
-   showVerified(user);
+   if(current===generation)showVerified(user);
   }
  }catch{showStatus(safeMessage("error"))}
  finally{$("authPassword").value="";busy=false;$("submitAccount").disabled=false}
@@ -83,8 +118,9 @@ $("recoverAccount").addEventListener("click",async()=>{
 });
 $("signOutAccount").addEventListener("click",async()=>{
  if(!adapter||busy)return;
- busy=true;try{await adapter.signOut();$("connectedAccount").hidden=true;$("accountForm").hidden=false;$("verifiedEmail").textContent="";showStatus("")}
- catch{showStatus(safeMessage("error"))}
+ busy=true;lockAccount();
+ try{await adapter.signOut();showStatus("");}
+ catch{gate?.notice(document.documentElement.lang==="en"?"Sign-out could not be confirmed. Please try again.":"No se pudo confirmar el cierre de sesión. Inténtalo de nuevo.");}
  finally{busy=false}
 });
 showMode("login");

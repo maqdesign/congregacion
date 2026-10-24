@@ -167,6 +167,17 @@ main{background-color:#F6EFE6;background-image:linear-gradient(145deg,#F9F5EE 0%
 .dev-fixture-active .dev-banner{top:calc(82px + env(safe-area-inset-top));bottom:auto;left:auto;right:12px}
 @media(max-width:400px){.version-banner{flex-wrap:wrap}.version-banner button{width:100%}}
 @media print{.connection-banner,.version-banner{display:none!important}}
+
+/* Fail-closed account shell. This only activates after Core Auth is explicitly enabled. */
+.account-access-page{min-height:100dvh;background:#F6EFE6;padding:clamp(24px,7vw,72px) 18px;display:grid;place-items:center}
+.account-access-page[hidden]{display:none!important}
+.account-access-card{width:min(100%,490px);background:#fff;border:1px solid #e5e4e1;border-radius:24px;padding:clamp(24px,5vw,42px);box-shadow:0 12px 40px #182F4B12}
+.account-access-card img{max-width:100%;height:auto;display:block;margin:0 0 30px}
+.account-access-card h1{font-size:clamp(25px,5vw,34px);line-height:1.18}
+.account-access-actions{display:grid;gap:12px;margin-top:28px}
+.account-access-actions button{min-height:48px;width:100%}
+body.auth-locked>header,body.auth-locked>main,body.auth-locked>nav,body.auth-locked>#devBanner,body.auth-locked>.connection-banner,body.auth-locked>.version-banner{display:none!important}
+@media print{body.auth-locked .account-access-page{display:none!important}}
 </style></head>
 <body><header><div class="brand"><img class="brand-lockup" src="/brand-logo-dark.svg" alt="" width="175" height="69"><span id="brand" class="sr-only">Mi Congregación</span></div><div class="global-actions">
 <button id="openSearch" class="icon-action" type="button" aria-label="Buscar secciones" title="Buscar secciones"><svg class="lucide" aria-hidden="true"><use href="/lucide-icons.svg#search"></use></svg></button>
