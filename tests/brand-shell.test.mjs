@@ -23,7 +23,8 @@ test("PWA icon is the branded isotype and SVG files are well formed",()=>{
  }
 });
 test("no fake content, unauthorized data or third-party font request added",()=>{
- assert.doesNotMatch(html,/@import|fonts\.googleapis|<script[^>]+src=/i);
+ assert.doesNotMatch(html,/@import|fonts\.googleapis|<script[^>]+src="https?:/i);
+ assert.match(html,/<script type="module" src="\/account-ui\.mjs"><\/script>/);
  assert.match(html,/Congregación no vinculada/);
  assert.match(html,/Sin datos conectados/);
 });

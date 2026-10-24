@@ -7,12 +7,14 @@ const js=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
 test("shell script parses",()=>assert.doesNotThrow(()=>new vm.Script(js)));
 test("Holoteles shell preserves app identity and global control order",()=>{
  assert.match(html,/brand-logo-dark\.svg/);
- const ids=["openSearch","updatesMenu","accountMenu","language"];
+ const ids=["openSearch","updatesMenu","accountMenu"];
  const indexes=ids.map(x=>html.indexOf('id="'+x+'"'));
  assert.ok(indexes.every(x=>x>=0));
  assert.deepEqual(indexes,[...indexes].sort((a,b)=>a-b));
  assert.match(html,/aria-label="Agregar: disponible cuando se habiliten acciones autorizadas"/);
  assert.match(html,/class="icon-action" type="button" disabled/);
+ assert.doesNotMatch(html,/<button id="language"/);
+ assert.match(html,/id="settingsDialog"/);
 });
 test("notification center offers individual and bulk read and never claims server sync",()=>{
  assert.match(html,/data-read-release="0961f66"/);
