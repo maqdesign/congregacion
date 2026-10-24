@@ -94,7 +94,10 @@ function bindPanels(f){
  for(const btn of document.querySelectorAll("[data-fixture-month]"))btn.addEventListener("click",()=>{month=new Date(month.getFullYear(),month.getMonth()+Number(btn.dataset.fixtureMonth),1);selectedDate=null;render()});
  for(const btn of document.querySelectorAll("[data-fixture-day]"))btn.addEventListener("click",()=>{selectedDate=selectedDate===btn.dataset.fixtureDay?null:btn.dataset.fixtureDay;render()});
  for(const btn of document.querySelectorAll("[data-fixture-action]"))btn.addEventListener("click",()=>{
-  scenario=({login:"full",signup:"signup-pending",confirm:"unlinked",link:"full",logout:"guest"})[btn.dataset.fixtureAction];extra=[];completed.clear();selectedDate=null;storeScenario();render();
+  const action=btn.dataset.fixtureAction;
+  scenario=({login:"full",signup:"signup-pending",confirm:"unlinked",link:"full",logout:"guest"})[action];extra=[];completed.clear();selectedDate=null;storeScenario();render();
+  // Re-rendering replaces the clicked button; move keyboard/VoiceOver focus to the next step.
+  (action==="signup"?document.querySelector('[data-fixture-action="confirm"]'):action==="confirm"?document.querySelector('[data-fixture-action="link"]'):$("fixtureScenario"))?.focus();
  });
  for(const btn of document.querySelectorAll("[data-fixture-complete]"))btn.addEventListener("click",()=>{const id=btn.dataset.fixtureComplete;completed.has(id)?completed.delete(id):completed.add(id);render()});
 }
