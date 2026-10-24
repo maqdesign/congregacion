@@ -1,10 +1,10 @@
 # Laboratorio DEV · Mi Congregación
 
 ## Cómo abrirlo
-- En `https://congregacion.holoteles.app/?dev=1`, o **avatar → Configuración → Modo desarrollo**.
+- En **avatar → Modo de la aplicación**, selecciona **DEV · Pruebas** para activar el laboratorio o **Normal** para desactivarlo. No hay que modificar la URL. El ajuste se conserva solo en la pestaña (sessionStorage).
 - Selecciona un escenario en **Laboratorio DEV**. Navega entre **Tablero**, **Agenda** y **Yo**.
 - Prueba mes anterior/siguiente, fechas, filtros Todo/Reuniones/Servicio/Mis asignaciones, simulación de ingreso/registro/salida, marcar una asignación hecha, añadir una actividad ficticia y Restablecer demo.
-- Desactivar desde Configuración o `?dev=0` retira completamente los paneles de demostración del DOM.
+- Seleccionar **Normal** en el menú de usuario retira los paneles ficticios del DOM.
 - Idioma ES/EN funciona por dominio o Preferencias.
 
 ## 13 escenarios de prueba
