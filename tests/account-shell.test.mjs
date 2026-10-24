@@ -27,7 +27,11 @@ test("all referenced Lucide symbols exist, especially formerly invisible search/
 });
 test("DEV is explicit and isolated from real account data",()=>{
  assert.match(js,/sessionStorage\.getItem\(devKey\)/);
- assert.match(js,/devParams\.get\("dev"\)==="1"/);
+ assert.match(html,/id="useNormalMode"/);
+ assert.match(html,/id="useDevMode"/);
+ assert.match(js,/setDevMode\(true\)/);
+ assert.match(js,/setDevMode\(false\)/);
+ assert.doesNotMatch(js,/devParams\.get\("dev"\)/);
  assert.match(html,/Datos ficticios · Sin sesión ni sincronización real/);
  assert.match(html,/src="\/dev-ui\.mjs"/);
  assert.match(html,/src="\/pwa-shell\.mjs"/);
