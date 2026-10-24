@@ -59,7 +59,7 @@ test("DEV JS parses and fixtures are imported only after explicit opt-in",()=>{
  const devUi=readFileSync(new URL("../app/dev-ui.mjs",import.meta.url),"utf8");
  const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
  assert.doesNotThrow(()=>new vm.Script(script));
- assert.doesNotThrow(()=>new vm.SourceTextModule(devUi),{skip:typeof vm.SourceTextModule!=="function"});
+ assert.doesNotThrow(()=>new vm.Script(devUi));
  assert.match(devUi,/if\(!active\(\)\)/);
  assert.match(devUi,/await import\("\.\/dev-fixtures\.mjs"\)/);
  assert.doesNotMatch(devUi,/fetch\(|localStorage|supabase|service_role/);
