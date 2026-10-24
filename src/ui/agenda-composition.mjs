@@ -5,6 +5,7 @@
 import {projectAuthorizedFeed} from '../integrations/authorized-feed.mjs';
 import {projectOwnAssignments} from '../integrations/own-assignments.mjs';
 import {prepareAgendaView} from './agenda-view-model.mjs';
+import {congregationClock} from './congregation-clock.mjs';
 
 const FILTERS=new Set(['todo','reuniones','servicio','mis_asignaciones']);
 const statusOf=(err)=>err?.code==='not-authorized'?'forbidden':'unavailable';
@@ -12,17 +13,18 @@ const statusOf=(err)=>err?.code==='not-authorized'?'forbidden':'unavailable';
 /** Never report missing data as an empty authorized result. */
 export function composeAgendaPresentation({
   publicEnvelope=null,privateEnvelope=null,context,from,to,now=Date.now(),
-  filter='todo',selectedDate=null,language='es',today=null,nowTime='00:00'
+  filter='todo',selectedDate=null,language='es',today=null,nowTime=null
 }={}){
   if(!FILTERS.has(filter))throw new TypeError('unknown-filter');
   const privateRequested=filter==='todo'||filter==='mis_asignaciones';
   const publicRequested=filter!=='mis_asignaciones';
   let publicStatus=publicRequested?'unavailable':'unlinked';
   let privateStatus=privateRequested?'unavailable':'unlinked';
-  let publicItems=[],privateItems=[];
+  let publicItems=[],privateItems=[],publicTimeZone=null;
   if(publicRequested&&publicEnvelope){
     try {
-      publicItems=projectAuthorizedFeed({envelope:publicEnvelope,context,from,to,now,filter:'todo'}).items;
+      const projection=projectAuthorizedFeed({envelope:publicEnvelope,context,from,to,now,filter:'todo'});
+      publicItems=projection.items;publicTimeZone=projection.timeZone;
       publicStatus='ready';
     }catch(err){publicStatus=statusOf(err);}
   }
@@ -42,7 +44,9 @@ export function composeAgendaPresentation({
     status=publicStatus;
     items=publicStatus==='ready'?[...publicItems,...(privateStatus==='ready'&&filter==='todo'?privateItems:[])]:[];
   }
-  const view=prepareAgendaView({status,items,filter,selectedDate,language,today,nowTime});
+  const clock=publicTimeZone?congregationClock(publicTimeZone,now):null;
+  const view=prepareAgendaView({status,items,filter,selectedDate,language,
+    today:today??clock?.today??null,nowTime:nowTime??clock?.nowTime??'00:00'});
   return Object.freeze({...view,publicStatus,privateStatus,
     // Show incomplete state when public activities are available but private channel is not.
     partial:filter==='todo'&&publicStatus==='ready'&&privateStatus!=='ready'
