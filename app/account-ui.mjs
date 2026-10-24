@@ -24,7 +24,9 @@ function devAllowed(){try{return sessionStorage.getItem("mi-congregacion-dev-ui-
 function configAllowed(){
  if(!config.enabled||!config.supabaseUrl||!config.publishableKey)return false;
  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(config.supabaseUrl))return false;
- return devAllowed()||config.allowProduction===true;
+ // Explicitly isolate the fixture sandbox from a real identity flow.
+ const authTest=new URLSearchParams(location.search).get("authTest")==="1";
+ return devAllowed()?authTest:config.allowProduction===true;
 }
 async function initializeAuth(){
  if(adapter||!configAllowed())return;
