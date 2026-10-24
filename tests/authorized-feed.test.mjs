@@ -11,7 +11,7 @@ const args={context,from:"2026-10-26",to:"2026-10-26",now:Date.parse("2026-10-22
 function expectCode(fn,code){assert.throws(fn,e=>e instanceof AgendaUnavailableError&&e.code===code)}
 test("expande solo agenda pública, nunca asignaciones privadas",()=>{
  const r=projectAuthorizedFeed({...args,envelope});assert.equal(r.items.length,1);assert.equal(r.timeZone,"America/Santo_Domingo");
- assert.equal(projectAuthorizedFeed({...args,envelope,filter:"mis_asignaciones"}).items.length,1);
+ assert.equal(projectAuthorizedFeed({...args,envelope,filter:"mis_asignaciones"}).items.length,0);
 });
 test("membresía inactiva y otra congregación se rechazan",()=>{
  expectCode(()=>projectAuthorizedFeed({...args,envelope,context:{...context,membership:{...context.membership,status:"pending"}}}),"not-authorized");
