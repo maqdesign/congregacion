@@ -19,7 +19,7 @@ test("first-time user can explore signup, email confirmation and membership with
   assert.equal(buildFixtureScenario(next).scenarioId,next);
  }
  assert.match(ui,/data-fixture-action="confirm"/);
- assert.match(ui,/data-fixture-action="link"/);
+ assert.match(ui,/data-demo-invite="link"/);
  assert.match(ui,/Crear cuenta ficticia/);
  assert.match(ui,/No se envió ningún mensaje real/);
  assert.match(ui,/No se envía ningún mensaje real/);
@@ -33,7 +33,7 @@ test("re-render moves keyboard focus to next onboarding step",()=>{
  assert.match(html,/\.fixture-onboarding button\{min-height:44px\}/);
 });
 test("PWA offline installation precaches lifecycle script and a new version key",()=>{
- assert.match(sw,/mi-congregacion-shell-v3-20261024/);
+ assert.match(sw,/mi-congregacion-shell-v4-20261024/);
  assert.match(sw,/"\/pwa-shell\.mjs"/);
  assert.match(sw,/if\(!STATIC.has\(url.pathname\)\|\|url.search\)return/);
 });

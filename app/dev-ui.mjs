@@ -7,7 +7,7 @@ const locale=()=>document.documentElement.lang==="en"?"en":"es";
 const t=(es,en)=>locale()==="en"?en:es;
 const safe=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const formatDate=s=>new Intl.DateTimeFormat(locale()==="en"?"en-US":"es-DO",{weekday:"short",day:"numeric",month:"short"}).format(new Date(s+"T12:00:00"));
-let source=null,scenario="full",month=new Date(),selectedDate=null,filter="todo",extra=[],completed=new Set(),version=0;
+let invitations=null,accessRequest=null,source=null,scenario="full",month=new Date(),selectedDate=null,filter="todo",extra=[],completed=new Set(),version=0;
 month=new Date(month.getFullYear(),month.getMonth(),1);
 function scenarioFromStorage(){try{return sessionStorage.getItem(scenarioKey)||"full"}catch{return "full"}}
 function storeScenario(){try{sessionStorage.setItem(scenarioKey,scenario)}catch{}}
@@ -74,12 +74,37 @@ function renderAgenda(f){
   '<div class="empty"><strong>'+t("Sin resultados","No results")+'</strong><span>'+t("Prueba otra fecha o filtro.","Try another date or filter.")+'</span></div>';
  $("agenda").querySelector(".fixture-panel").innerHTML='<div class="kicker">'+t("AGENDA · DEMOSTRACIÓN","CALENDAR · DEMO")+'</div><h1>'+t("Agenda","Calendar")+'</h1><p>'+t("Filtra y selecciona días; todo es ficticio.","Filter and select dates; everything is fictional.")+'</p>'+card(t("Calendario","Calendar"),calendarHtml(f))+card(t("Actividades","Activities"),controls+listHtml);
 }
+function renderDemoInvitation(){
+ if(!invitations)return "";
+ const intro='<p class="small">'+t("Ejemplo sin cuentas reales. Solo un revisor autorizado puede aprobar el acceso.","Example without real accounts. Only an authorized reviewer may approve access.")+'</p>';
+ if(!accessRequest)return '<div class="fixture-onboarding"><strong>'+t("Solicitar acceso a la congregación","Request congregation access")+'</strong>'+intro+
+ '<div class="fixture-actions"><button type="button" class="secondary" data-demo-invite="link">'+t("Enlace de ejemplo","Sample link")+'</button><button type="button" class="secondary" data-demo-invite="direct">'+t("Solicitud directa","Direct request")+'</button></div><label for="inviteCode">'+t("Código de invitación","Invitation code")+'</label><input id="inviteCode" maxlength="24" placeholder="DEMO-4821"><button type="button" class="secondary" data-demo-invite="code">'+t("Usar código","Use code")+'</button></div>';
+ return '<div class="fixture-onboarding"><strong>'+t("Solicitud ","Request ")+safe(accessRequest.reference||"")+'</strong><p>'+t("Estado: ","Status: ")+safe(accessRequest.status)+'</p>'+intro+
+ (accessRequest.status==="pending_review"?'<div class="fixture-actions"><button type="button" class="secondary" data-demo-invite="approve">'+t("Simular aprobación en Servicio","Simulate approval in Service")+'</button><button type="button" class="secondary" data-demo-invite="reject">'+t("Simular rechazo","Simulate rejection")+'</button></div>':"")+
+ '<button type="button" class="secondary" data-demo-invite="restart">'+t("Reiniciar solicitud","Restart request")+'</button></div>';
+}
+function bindDemoInvites(){
+ for(const button of document.querySelectorAll("[data-demo-invite]"))button.addEventListener("click",()=>{
+  const action=button.dataset.demoInvite;
+  if(action==="restart"){accessRequest=null;render();return}
+  if(action==="approve"||action==="reject"){
+   accessRequest=invitations.reviewDemoAccessRequest(accessRequest,action);
+   if(accessRequest.grantsAccess){scenario="full";storeScenario();accessRequest=null}
+   render();return;
+  }
+  const code=document.getElementById("inviteCode")?.value||"";
+  const result=invitations.createDemoAccessRequest({method:action,code});
+  accessRequest=result.status==="invalid"?null:result;
+  if(result.status==="invalid")window.alert(t("Código ficticio incorrecto. Usa DEMO-4821.","Invalid sample code. Use DEMO-4821."));
+  render();
+ });
+}
 function renderMe(f){
  const identity=f.scenarioId==="signup-pending"?'<strong>'+t("Revisa tu correo","Check your email")+'</strong><p>'+t("El registro ficticio espera confirmación. No se envió ningún mensaje real.","Sample registration awaits confirmation. No real message was sent.")+'</p>':f.account==="verified"?'<strong>'+safe(f.displayName)+'</strong><p>'+safe(f.email)+'</p><span class="fixture-chip">'+t("Identidad simulada","Simulated identity")+'</span>':
  f.account==="expired"?'<strong>'+t("Sesión vencida","Session expired")+'</strong><p>'+t("Vuelve a iniciar sesión para consultar información.","Sign in again to view information.")+'</p>':
  '<strong>'+t("Sin iniciar sesión","Signed out")+'</strong><p>'+t("Puedes probar el recorrido de una cuenta nueva.","You can try the new-account journey.")+'</p>';
  const nextStep=f.scenarioId==="signup-pending"?'<div class="fixture-onboarding"><strong>'+t("Paso 2 de 3 · Confirmación ficticia","Step 2 of 3 · Sample confirmation")+'</strong><p>'+t("Imagina que recibiste el correo de confirmación. No se envía ningún mensaje real.","Imagine you received the confirmation email. No real message is sent.")+'</p><button type="button" class="primary" data-fixture-action="confirm">'+t("Confirmar correo ficticio","Confirm sample email")+'</button></div>':
- f.scenarioId==="unlinked"?'<div class="fixture-onboarding"><strong>'+t("Paso 3 de 3 · Vincular congregación ficticia","Step 3 of 3 · Link sample congregation")+'</strong><p>'+t("La cuenta de demostración está confirmada, pero todavía no tiene una congregación vinculada.","The demo account is confirmed, but has no linked congregation yet.")+'</p><button type="button" class="primary" data-fixture-action="link">'+t("Vincular congregación de ejemplo","Link sample congregation")+'</button></div>':
+ f.scenarioId==="unlinked"?renderDemoInvitation():
  f.scenarioId==="guest"?'<div class="fixture-onboarding"><strong>'+t("Paso 1 de 3 · Crear cuenta de ejemplo","Step 1 of 3 · Create sample account")+'</strong><p>'+t("Prueba el registro sin introducir nombre, correo ni contraseña.","Try signup without entering a name, email or password.")+'</p><button type="button" class="primary" data-fixture-action="signup">'+t("Crear cuenta ficticia","Create sample account")+'</button></div>':"";
  const actions=nextStep+'<div class="fixture-actions"><button type="button" class="secondary" data-fixture-action="login">'+t("Simular ingreso","Simulate sign-in")+'</button><button type="button" class="secondary" data-fixture-action="signup">'+t("Simular registro","Simulate signup")+'</button><button type="button" class="secondary" data-fixture-action="logout">'+t("Simular salida","Simulate sign-out")+'</button></div><p class="small">'+t("Ninguna acción inicia sesión, crea cuentas o vincula congregaciones reales.","No action signs in, creates accounts or links real congregations.")+'</p>';
  const mine=source.fixturePersonalAssignments(f);
@@ -87,6 +112,7 @@ function renderMe(f){
  $("yo").querySelector(".fixture-panel").innerHTML='<div class="kicker">'+t("ESPACIO PERSONAL · DEMOSTRACIÓN","PERSONAL SPACE · DEMO")+'</div><h1>'+t("Yo","Me")+'</h1>'+card(t("Cuenta Holoteles","Holoteles Account"),'<div class="fixture-identity">'+identity+'</div><p>'+safe(f.organization||t("Congregación no vinculada","Congregation not linked"))+'</p>'+actions)+card(t("Mis asignaciones","My assignments"),assignmentBody);
 }
 function bindPanels(f){
+ bindDemoInvites();
  for(const btn of document.querySelectorAll("[data-fixture-nav]"))btn.addEventListener("click",()=>{
   document.querySelector('[data-tab="'+btn.dataset.fixtureNav+'"]')?.click();
  });
@@ -95,7 +121,7 @@ function bindPanels(f){
  for(const btn of document.querySelectorAll("[data-fixture-day]"))btn.addEventListener("click",()=>{selectedDate=selectedDate===btn.dataset.fixtureDay?null:btn.dataset.fixtureDay;render()});
  for(const btn of document.querySelectorAll("[data-fixture-action]"))btn.addEventListener("click",()=>{
   const action=btn.dataset.fixtureAction;
-  scenario=({login:"full",signup:"signup-pending",confirm:"unlinked",link:"full",logout:"guest"})[action];extra=[];completed.clear();selectedDate=null;storeScenario();render();
+  scenario=({login:"full",signup:"signup-pending",confirm:"unlinked",link:"full",logout:"guest"})[action];accessRequest=null;extra=[];completed.clear();selectedDate=null;storeScenario();render();
   // Re-rendering replaces the clicked button; move keyboard/VoiceOver focus to the next step.
   (action==="signup"?document.querySelector('[data-fixture-action="confirm"]'):action==="confirm"?document.querySelector('[data-fixture-action="link"]'):$("fixtureScenario"))?.focus();
  });
@@ -121,7 +147,7 @@ function createWorkbench(){
  const root=document.createElement("div");root.id="devWorkbench";root.className="dev-workbench";root.innerHTML='<div class="dev-workbench-head"><div><strong id="fixtureTitle"></strong><p id="fixtureHelp"></p></div><span class="fixture-chip fixture-dev-label">DEV · FIXTURES</span></div><div class="dev-workbench-controls"><label><span id="fixtureScenarioLabel"></span><select id="fixtureScenario" aria-describedby="fixtureHint"></select></label><button id="fixtureAdd" class="secondary" type="button"></button><button id="fixtureReset" class="secondary" type="button"></button></div><p class="small" id="fixtureHint" aria-live="polite"></p>';
  document.querySelector("main").prepend(root);
  for(const name of ["tablero","agenda","yo"]){const panel=document.createElement("div");panel.className="fixture-panel";$(name).prepend(panel)}
- $("fixtureScenario").addEventListener("change",e=>{scenario=e.target.value;extra=[];completed.clear();selectedDate=null;storeScenario();render()});
+ $("fixtureScenario").addEventListener("change",e=>{scenario=e.target.value;accessRequest=null;extra=[];completed.clear();selectedDate=null;storeScenario();render()});
  $("fixtureAdd").addEventListener("click",()=>{
   if(fixture().agendaState!=="ready")return;
   const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
@@ -129,12 +155,12 @@ function createWorkbench(){
   extra.push({id:"demo-added-"+(++version),date,time:"17:00",category:"servicio",titleEs:"Actividad añadida en DEV",titleEn:"Activity added in DEV",placeEs:"Lugar ficticio",placeEn:"Sample location",isMine:false,status:"published"});
   month=new Date(tomorrow.getFullYear(),tomorrow.getMonth(),1);selectedDate=null;render();
  });
- $("fixtureReset").addEventListener("click",()=>{scenario="full";extra=[];completed.clear();filter="todo";selectedDate=null;month=new Date(new Date().getFullYear(),new Date().getMonth(),1);storeScenario();render()});
+ $("fixtureReset").addEventListener("click",()=>{scenario="full";accessRequest=null;extra=[];completed.clear();filter="todo";selectedDate=null;month=new Date(new Date().getFullYear(),new Date().getMonth(),1);storeScenario();render()});
 }
 async function synchronize(){
  if(!active()){document.body.classList.remove("dev-fixture-active");$("devWorkbench")?.remove();document.querySelectorAll(".fixture-panel").forEach(x=>x.remove());return}
  if(!source){
-  try{source=await import("./dev-fixtures.mjs")}catch{return}
+  try{source=await import("./dev-fixtures.mjs");invitations=await import("./dev-invitations.mjs")}catch{return}
  }
  if(!active())return;
  if(!source.FIXTURE_SCENARIOS.some(s=>s.id===scenario))scenario="full";

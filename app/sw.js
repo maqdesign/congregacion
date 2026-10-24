@@ -1,10 +1,10 @@
 /* Mi Congregación: static shell only. No account, API, session or private feed caching. */
-const CACHE="mi-congregacion-shell-v3-20261024";
+const CACHE="mi-congregacion-shell-v4-20261024";
 const SHELL=[
  "/","/index.html","/manifest.webmanifest","/brand-isotype.svg",
  "/brand-logo-dark.svg","/brand-logo-light.svg","/lucide-icons.svg",
  "/account-ui.mjs","/account-privacy-gate.mjs","/holoteles-account-adapter.mjs","/holoteles-auth-config.mjs",
- "/dev-ui.mjs","/dev-fixtures.mjs","/pwa-shell.mjs"
+ "/dev-ui.mjs","/dev-fixtures.mjs","/dev-invitations.mjs","/pwa-shell.mjs"
 ];
 const STATIC=new Set(SHELL);
 self.addEventListener("install",event=>{

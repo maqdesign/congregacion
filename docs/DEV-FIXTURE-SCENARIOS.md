@@ -46,3 +46,8 @@
 4. Escenario **Todo conectado** → explora Tablero, Agenda y Mis asignaciones.
 
 Las acciones son reversibles mediante **Simular salida** o **Restablecer demo**. No se solicitan credenciales, nombres ni correos reales. El foco del teclado se mueve al siguiente paso al cambiar el estado, para que el recorrido sea accesible. **No sustituye la validación del registro y autorización reales de Holoteles Core.**
+
+## Solicitud de acceso por invitación (nueva simulación DEV)
+En **Menú de usuario → DEV · Pruebas**, selecciona **Cuenta sin congregación** y abre **Yo**. Se ofrecen tres alternativas **solo ficticias**: enlace de ejemplo, solicitud directa, o código manual `DEMO-4821`. Todas crean `pending_review` con referencia `MC-4821` y **ninguna concede acceso**. Se puede simular la decisión de un anciano desde una sección rotulada como vista ficticia de Servicio: **aprobar** (pasa al escenario `full`) o **rechazar** (sin datos autorizados). Reiniciar borra la solicitud en memoria.
+
+Es UX exclusivamente de laboratorio, **no la bandeja real de Servicio ni un enlace válido**. No utiliza red, cuentas, API ni datos personales, y no concede permisos reales. El código de invitación de ejemplo no es el código de seguimiento de solicitud; Core definirá la implementación de ambos y sus políticas de seguridad. Las pruebas reales de RLS/identidad quedan bloqueadas.
