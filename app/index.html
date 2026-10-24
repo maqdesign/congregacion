@@ -158,6 +158,28 @@ $("searchInput").addEventListener("input",filterSearch);
 document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>{$("navSearch").close();navigate(b.dataset.jump)}));
 updateNews();
 
+Object.assign(shellStrings.es,{
+ settings:"Configuración y preferencias",language:"Idioma",languageHelp:"El dominio determina el idioma inicial. Puedes cambiarlo aquí.",devMode:"Modo desarrollo (solo pruebas de interfaz)",devExplain:"Solo este navegador; no habilita datos ficticios, permisos ni sesiones reales.",devBanner:"Pruebas de interfaz · Sin datos ni sesión real",close:"Cerrar",connectAccount:"Entrar o crear Cuenta Holoteles",
+ onboardingIntro:"Una cuenta para las aplicaciones Holoteles. Tu congregación y tus permisos se vinculan por separado.",signIn:"Ya tengo cuenta",signUp:"Crear cuenta",signInTitle:"Entrar con tu Cuenta Holoteles",loginSteps:"Usarás tu correo y contraseña Holoteles, no una contraseña nueva para esta app.",signUpTitle:"Tu primera Cuenta Holoteles",signupSteps:"El registro estándar pide nombre, apellido, correo y contraseña. Después confirmarás tu correo y elegirás tu congregación, sin obtener permisos automáticamente.",authPending:"Conexión de identidad pendiente",authPendingDetail:"Core todavía no ha habilitado para Mi Congregación un inicio de sesión seguro. No te pediremos tu contraseña hasta que esté conectado.",authSeparation:"Iniciar sesión no activa sincronización ni concede acceso a otras personas."
+});
+Object.assign(shellStrings.en,{
+ settings:"Settings and preferences",language:"Language",languageHelp:"The domain sets the initial language. You can change it here.",devMode:"Development mode (UI tests only)",devExplain:"Only this browser; no sample data, permissions or real sessions.",devBanner:"UI tests · No data or real session",close:"Close",connectAccount:"Sign in or create Holoteles Account",
+ onboardingIntro:"One account for Holoteles apps. Your congregation and permissions are linked separately.",signIn:"I have an account",signUp:"Create account",signInTitle:"Sign in with your Holoteles Account",loginSteps:"Use your Holoteles email and password, not a new password for this app.",signUpTitle:"Your first Holoteles Account",signupSteps:"Standard registration asks for your name, surname, email and password. Then confirm your email and choose your congregation, without automatically gaining permissions.",authPending:"Identity connection pending",authPendingDetail:"Core has not enabled secure sign-in for My Congregation yet. We will not ask for your password until it is connected.",authSeparation:"Signing in does not enable synchronization or grant access to other people's data."
+});
+document.querySelectorAll("[data-close-dialog]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.closeDialog).close()));
+document.querySelectorAll("[data-auth-view]").forEach(b=>b.addEventListener("click",()=>{
+ const signup=b.dataset.authView==="signup";
+ $("signupInfo").hidden=!signup;$("loginInfo").hidden=signup;
+ document.querySelectorAll("[data-auth-view]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+}));
+const devKey="mi-congregacion-dev-ui-v1";
+let devMode=false;try{devMode=sessionStorage.getItem(devKey)==="1"}catch{}
+const devParams=new URLSearchParams(location.search);
+if(devParams.has("dev")){devMode=devParams.get("dev")==="1";try{sessionStorage.setItem(devKey,devMode?"1":"0")}catch{}}
+function updateDev(){$("devBanner").hidden=!devMode;$("devModeToggle").checked=devMode}
+$("devModeToggle").addEventListener("change",e=>{devMode=e.target.checked;try{sessionStorage.setItem(devKey,devMode?"1":"0")}catch{}updateDev()});
+updateDev();
+
 function translate(){document.documentElement.lang=lang;document.querySelectorAll('input[name="appLanguage"]').forEach(x=>x.checked=x.value===lang);$("prev").setAttribute("aria-label",lang==="es"?"Mes anterior":"Previous month");$("next").setAttribute("aria-label",lang==="es"?"Mes siguiente":"Next month");$("brand").textContent=lang==="es"?"Mi Congregación":"My Congregation";document.querySelectorAll("[data-t]").forEach(e=>{e.textContent=d[lang][e.dataset.t]||e.textContent});document.querySelectorAll("[data-shell]").forEach(e=>{e.textContent=shellStrings[lang][e.dataset.shell]||e.textContent});$("openSearch").setAttribute("aria-label",shellStrings[lang].searchTitle);$("openSearch").title=shellStrings[lang].searchTitle;$("updatesMenu").querySelector("summary").setAttribute("aria-label",shellStrings[lang].news);$("accountMenu").querySelector("summary").setAttribute("aria-label",shellStrings[lang].account);$("searchInput").placeholder=lang==="es"?"Tablero, Agenda, Yo…":"Dashboard, Calendar, Me…";filterSearch();cal()}
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.tab)));$("openCalendar").addEventListener("click",()=>navigate("agenda"));$("accountDetails").addEventListener("click",()=>navigate("yo"));$("prev").addEventListener("click",()=>{month=new Date(month.getFullYear(),month.getMonth()-1,1);selectedDate=null;cal()});$("next").addEventListener("click",()=>{month=new Date(month.getFullYear(),month.getMonth()+1,1);selectedDate=null;cal()});document.querySelectorAll('input[name="appLanguage"]').forEach(x=>x.addEventListener("change",()=>{if(x.checked){lang=x.value;try{localStorage.setItem(localeKey,lang)}catch{}translate()}}));document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",()=>{activeFilter=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));$("agendaStatus").dataset.filter=activeFilter}));translate();navigate(location.hash.slice(1)||"tablero")})();
 </script></body></html>
