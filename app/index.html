@@ -163,7 +163,7 @@ main{background-color:#F6EFE6;background-image:linear-gradient(145deg,#F9F5EE 0%
 .connection-banner[hidden],.version-banner[hidden]{display:none}
 .version-banner button{flex:none;min-height:44px;padding:8px 12px;border:1px solid #D8B48A;background:#FFF9ED;color:#182F4B;border-radius:9px;font-weight:800}
 .version-banner:has(+.connection-banner:not([hidden])),.connection-banner:has(~.version-banner:not([hidden])){bottom:calc(155px + env(safe-area-inset-bottom))}
-.dev-fixture-active .dev-banner{bottom:calc(170px + env(safe-area-inset-bottom))}
+.dev-fixture-active .dev-banner{top:calc(82px + env(safe-area-inset-top));bottom:auto;left:auto;right:12px}
 @media(max-width:400px){.version-banner{flex-wrap:wrap}.version-banner button{width:100%}}
 @media print{.connection-banner,.version-banner{display:none!important}}
 </style></head>
