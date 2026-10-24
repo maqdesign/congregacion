@@ -11,7 +11,7 @@ test("PWA worker and UI scripts parse",()=>{
 });
 test("only public first-party shell assets are cacheable",()=>{
  assert.match(sw,/const STATIC=new Set\(SHELL\)/);
- for(const name of ["dev-ui.mjs","dev-fixtures.mjs","account-ui.mjs","brand-isotype.svg","lucide-icons.svg"]){
+ for(const name of ["dev-ui.mjs","dev-fixtures.mjs","account-ui.mjs","pwa-shell.mjs","brand-isotype.svg","lucide-icons.svg"]){
   assert.match(sw,new RegExp(name.replace(".","\\.")));
  }
  assert.match(sw,/request.method!=="GET"/);

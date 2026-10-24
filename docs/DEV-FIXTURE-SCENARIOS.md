@@ -38,3 +38,11 @@
 - Pruebas Node `tests/dev-fixtures.test.mjs` escritas, ejecución de suite completa pendiente.
 - Pendientes: QA de Safari real, navegación por teclado/VoiceOver, conexión del view model compartido a fuentes autorizadas, login real Holoteles, API Core, vínculos y Auth/RLS A/B.
 - Siguiente responsable Core: resolver autoridad Auth y endpoints; Mi Congregación/Codex: QA Node, Safari y accesibilidad sin preview ni despliegues de prueba.
+
+## Recorrido de primera cuenta (solo ficticio)
+1. Escenario **Visitante sin cuenta** → sección **Yo** → **Crear cuenta ficticia**.
+2. Escenario **Registro por confirmar** → **Confirmar correo ficticio** (no se envía correo).
+3. Escenario **Cuenta sin congregación** → **Vincular congregación de ejemplo** (no se escribe en servidores).
+4. Escenario **Todo conectado** → explora Tablero, Agenda y Mis asignaciones.
+
+Las acciones son reversibles mediante **Simular salida** o **Restablecer demo**. No se solicitan credenciales, nombres ni correos reales. El foco del teclado se mueve al siguiente paso al cambiar el estado, para que el recorrido sea accesible. **No sustituye la validación del registro y autorización reales de Holoteles Core.**
