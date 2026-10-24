@@ -36,10 +36,9 @@ test('invalid public feed does not hide independently authorized private section
 });
 
 test('upcoming event uses congregation time, not device UTC',()=>{
- const later={...pub,activities:[{...pub.activities[0],date:'2026-10-23',time:'22:30'}]};
+ const later={...pub,generatedAt:'2026-10-24T02:14:00Z',expiresAt:'2026-10-24T02:16:00Z',activities:[{...pub.activities[0],date:'2026-10-23',time:'22:30'}]};
  const v=composeAgendaPresentation({...args,publicEnvelope:later,
    now:Date.parse('2026-10-24T02:15:00Z'),privateEnvelope:null});
- // Fresh envelopes must be supplied for this timestamp.
  assert.equal(v.status,'ready');
  assert.equal(v.next?.id,'s1');
 });
