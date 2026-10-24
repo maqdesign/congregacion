@@ -2,7 +2,7 @@
 // Fixtures are dynamically imported only after explicit DEV opt-in.
 const $=id=>document.getElementById(id);
 const key="mi-congregacion-dev-ui-v1",scenarioKey="mi-congregacion-fixture-scenario-v1";
-const active=()=>{try{return sessionStorage.getItem(key)==="1"}catch{return false}};
+const active=()=>{try{return sessionStorage.getItem(key)==="1"&&new URLSearchParams(location.search).get("authTest")!=="1"}catch{return false}};
 const locale=()=>document.documentElement.lang==="en"?"en":"es";
 const t=(es,en)=>locale()==="en"?en:es;
 const safe=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -75,7 +75,7 @@ function renderAgenda(f){
  $("agenda").querySelector(".fixture-panel").innerHTML='<div class="kicker">'+t("AGENDA · DEMOSTRACIÓN","CALENDAR · DEMO")+'</div><h1>'+t("Agenda","Calendar")+'</h1><p>'+t("Filtra y selecciona días; todo es ficticio.","Filter and select dates; everything is fictional.")+'</p>'+card(t("Calendario","Calendar"),calendarHtml(f))+card(t("Actividades","Activities"),controls+listHtml);
 }
 function renderMe(f){
- const identity=f.account==="verified"?'<strong>'+safe(f.displayName)+'</strong><p>'+safe(f.email)+'</p><span class="fixture-chip">'+t("Identidad simulada","Simulated identity")+'</span>':
+ const identity=f.scenarioId==="signup-pending"?'<strong>'+t("Revisa tu correo","Check your email")+'</strong><p>'+t("El registro ficticio espera confirmación. No se envió ningún mensaje real.","Sample registration awaits confirmation. No real message was sent.")+'</p>':f.account==="verified"?'<strong>'+safe(f.displayName)+'</strong><p>'+safe(f.email)+'</p><span class="fixture-chip">'+t("Identidad simulada","Simulated identity")+'</span>':
  f.account==="expired"?'<strong>'+t("Sesión vencida","Session expired")+'</strong><p>'+t("Vuelve a iniciar sesión para consultar información.","Sign in again to view information.")+'</p>':
  '<strong>'+t("Sin iniciar sesión","Signed out")+'</strong><p>'+t("Puedes probar el recorrido de una cuenta nueva.","You can try the new-account journey.")+'</p>';
  const actions='<div class="fixture-actions"><button type="button" class="secondary" data-fixture-action="login">'+t("Simular ingreso","Simulate sign-in")+'</button><button type="button" class="secondary" data-fixture-action="signup">'+t("Simular registro","Simulate signup")+'</button><button type="button" class="secondary" data-fixture-action="logout">'+t("Simular salida","Simulate sign-out")+'</button></div><p class="small">'+t("Ninguna acción inicia sesión ni crea cuentas reales.","No action signs in or creates real accounts.")+'</p>';
@@ -108,7 +108,7 @@ function render(){
  $("fixtureScenarioLabel").textContent=t("Escenario","Scenario");
  $("fixtureHint").textContent=locale()==="en"?source.FIXTURE_SCENARIOS.find(s=>s.id===scenario).hintEn:source.FIXTURE_SCENARIOS.find(s=>s.id===scenario).hintEs;
  $("fixtureAdd").textContent=t("Añadir actividad ficticia","Add sample activity");
- $("fixtureReset").textContent=t("Restablecer demo","Reset demo");
+ $("fixtureReset").textContent=t("Restablecer demo","Reset demo");$("fixtureAdd").disabled=f.agendaState!=="ready";$("fixtureAdd").title=f.agendaState!=="ready"?t("Disponible solo con agenda de demostración conectada","Available only with connected demo calendar"):"";
  renderBoard(f);renderAgenda(f);renderMe(f);bindPanels(f);
 }
 function createWorkbench(){
