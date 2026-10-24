@@ -6,11 +6,11 @@ const context={authenticated:true,membership:{organizationId:"org-synthetic",sta
 const pub={organizationId:"org-synthetic",publicationStatus:"published",classification:"non_confidential",publishedAt:"2026-10-01T00:00:00Z",deliveredByAuthorizedEndpoint:true};
 const schedule={...pub,id:"s1",seriesId:"monday",sourceApp:"reuniones",category:"reuniones",effectiveFrom:"2026-10-01",weekdays:[1],time:"19:00",title:"Reunión de prueba"};
 const assignment={...pub,id:"a1",sourceApp:"reuniones",category:"asignaciones",date:"2026-10-26",time:"19:00",personId:"person-1",personalDelivery:true,title:"Asignación sintética"};
-const envelope={schemaVersion:1,organizationId:"org-synthetic",state:"published",timeZone:"America/Santo_Domingo",generatedAt:"2026-10-20T00:00:00Z",expiresAt:"2026-11-01T00:00:00Z",schedules:[schedule],exceptions:[],activities:[assignment]};
+const envelope={schemaVersion:1,organizationId:"org-synthetic",state:"published",timeZone:"America/Santo_Domingo",generatedAt:"2026-10-20T00:00:00Z",expiresAt:"2026-11-01T00:00:00Z",schedules:[schedule],exceptions:[],activities:[]};
 const args={context,from:"2026-10-26",to:"2026-10-26",now:Date.parse("2026-10-22T00:00:00Z")};
 function expectCode(fn,code){assert.throws(fn,e=>e instanceof AgendaUnavailableError&&e.code===code)}
-test("expande agenda publicada y asignación propia en la fecha solicitada",()=>{
- const r=projectAuthorizedFeed({...args,envelope});assert.equal(r.items.length,2);assert.equal(r.timeZone,"America/Santo_Domingo");
+test("expande solo agenda pública, nunca asignaciones privadas",()=>{
+ const r=projectAuthorizedFeed({...args,envelope});assert.equal(r.items.length,1);assert.equal(r.timeZone,"America/Santo_Domingo");
  assert.equal(projectAuthorizedFeed({...args,envelope,filter:"mis_asignaciones"}).items.length,1);
 });
 test("membresía inactiva y otra congregación se rechazan",()=>{
@@ -26,10 +26,12 @@ test("snapshot caducado o fecha de publicación futura se rechazan",()=>{
  expectCode(()=>projectAuthorizedFeed({...args,envelope:{...envelope,expiresAt:"2026-10-21T00:00:00Z"}}),"stale");
  expectCode(()=>projectAuthorizedFeed({...args,envelope:{...envelope,activities:[{...assignment,publishedAt:"2027-01-01T00:00:00Z"}]}}),"invalid-records");
 });
-test("no revela asignaciones ajenas ni las entrega como actividades generales",()=>{
- const other={...assignment,id:"a2",personId:"person-2"};
- const result=projectAuthorizedFeed({...args,envelope:{...envelope,activities:[assignment,other]}});
- assert.equal(result.items.filter(x=>x.category==="asignaciones").length,1);
+test("rechaza asignaciones privadas en el feed general, incluso las propias",()=>{
+ for(const row of [assignment,{...assignment,id:"a2",personId:"person-2"},
+   {...assignment,id:"a3",category:"eventos",personalDelivery:false},
+   {...assignment,id:"a4",category:"eventos",personalDelivery:false,personId:undefined}]){
+  expectCode(()=>projectAuthorizedFeed({...args,envelope:{...envelope,activities:[row]}}),"invalid-records");
+ }
 });
 test("no acepta zona horaria inválida ni excepciones de otro productor",()=>{
  expectCode(()=>projectAuthorizedFeed({...args,envelope:{...envelope,timeZone:"Mars/Colony"}}),"invalid-envelope");
@@ -43,7 +45,7 @@ test("fetch: GET sin caché, credenciales del mismo origen y sin IDs de usuario"
  let request;
  const fetchImpl=async(url,options)=>{request={url,options};return {ok:true,status:200,headers:{get:k=>k==="content-type"?"application/json":null},text:async()=>JSON.stringify(envelope)}};
  const r=await loadAuthorizedAgenda({...args,fetchImpl});
- assert.equal(r.items.length,2);assert.equal(request.url.startsWith("/api/congregation/agenda?from="),true);
+ assert.equal(r.items.length,1);assert.equal(request.url.startsWith("/api/congregation/agenda?from="),true);
  assert.equal(request.options.credentials,"same-origin");assert.equal(request.options.cache,"no-store");
  assert.equal(request.url.includes("person-1"),false);assert.equal(request.url.includes("org-synthetic"),false);
 });
