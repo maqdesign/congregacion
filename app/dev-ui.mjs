@@ -7,7 +7,7 @@ const locale=()=>document.documentElement.lang==="en"?"en":"es";
 const t=(es,en)=>locale()==="en"?en:es;
 const safe=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const formatDate=s=>new Intl.DateTimeFormat(locale()==="en"?"en-US":"es-DO",{weekday:"short",day:"numeric",month:"short"}).format(new Date(s+"T12:00:00"));
-let invitations=null,accessRequest=null,source=null,scenario="full",month=new Date(),selectedDate=null,filter="todo",extra=[],completed=new Set(),version=0;
+let lastGuidedKey="",invitations=null,accessRequest=null,source=null,scenario="full",month=new Date(),selectedDate=null,filter="todo",extra=[],completed=new Set(),version=0;
 month=new Date(month.getFullYear(),month.getMonth(),1);
 function scenarioFromStorage(){try{return sessionStorage.getItem(scenarioKey)||"full"}catch{return "full"}}
 function storeScenario(){try{sessionStorage.setItem(scenarioKey,scenario)}catch{}}
@@ -109,7 +109,7 @@ function renderMe(f){
  const actions=nextStep+'<div class="fixture-actions"><button type="button" class="secondary" data-fixture-action="login">'+t("Simular ingreso","Simulate sign-in")+'</button><button type="button" class="secondary" data-fixture-action="signup">'+t("Simular registro","Simulate signup")+'</button><button type="button" class="secondary" data-fixture-action="logout">'+t("Simular salida","Simulate sign-out")+'</button></div><p class="small">'+t("Ninguna acción inicia sesión, crea cuentas o vincula congregaciones reales.","No action signs in, creates accounts or links real congregations.")+'</p>';
  const mine=source.fixturePersonalAssignments(f);
  const assignmentBody=f.agendaState!=="ready"?'<p>'+safe(stateMessage(f))+'</p>':mine.length?'<div class="fixture-list">'+mine.map(a=>itemHtml(a,{personal:true})).join("")+'</div>':'<div class="empty">'+t("No tienes asignaciones publicadas.","You have no published assignments.")+'</div>';
- $("yo").querySelector(".fixture-panel").innerHTML='<div class="kicker">'+t("ESPACIO PERSONAL · DEMOSTRACIÓN","PERSONAL SPACE · DEMO")+'</div><h1>'+t("Yo","Me")+'</h1>'+card(t("Cuenta Holoteles","Holoteles Account"),'<div class="fixture-identity">'+identity+'</div><p>'+safe(f.organization||t("Congregación no vinculada","Congregation not linked"))+'</p>'+actions)+card(t("Mis asignaciones","My assignments"),assignmentBody);
+ $("yo").querySelector(".fixture-panel").innerHTML='<div class="kicker">'+t("ESPACIO PERSONAL · DEMOSTRACIÓN","PERSONAL SPACE · DEMO")+'</div><h1>'+t("Yo","Me")+'</h1>'+card(t("Cuenta Holoteles","Holoteles Account"),'<div class="fixture-identity">'+identity+'</div><p>'+safe(f.organization||t("Congregación no vinculada","Congregation not linked"))+'</p>'+actions)+(guided?'':card(t("Mis asignaciones","My assignments"),assignmentBody));
 }
 function bindPanels(f){
  bindDemoInvites();
@@ -141,7 +141,20 @@ function render(){
  $("fixtureHint").textContent=locale()==="en"?source.FIXTURE_SCENARIOS.find(s=>s.id===scenario).hintEn:source.FIXTURE_SCENARIOS.find(s=>s.id===scenario).hintEs;
  $("fixtureAdd").textContent=t("Añadir actividad ficticia","Add sample activity");
  $("fixtureReset").textContent=t("Restablecer demo","Reset demo");$("fixtureAdd").disabled=f.agendaState!=="ready";$("fixtureAdd").title=f.agendaState!=="ready"?t("Disponible solo con agenda de demostración conectada","Available only with connected demo calendar"):"";
+ const guided=f.agendaState!=="ready";
+ const guideKey=guided?scenario+":"+(accessRequest?.status||"none"):"ready";
+ document.body.classList.toggle("dev-access-guided",guided);
  renderBoard(f);renderAgenda(f);renderMe(f);bindPanels(f);
+ if(guided&&$("yo").hidden){
+  document.querySelector('[data-tab="yo"]')?.click();
+ }else if(!guided&&lastGuidedKey&&lastGuidedKey!=="ready"){
+  document.querySelector('[data-tab="tablero"]')?.click();
+ }
+ if(guideKey!==lastGuidedKey){
+  lastGuidedKey=guideKey;
+  window.scrollTo(0,0);
+ }
+
 }
 function createWorkbench(){
  const root=document.createElement("div");root.id="devWorkbench";root.className="dev-workbench";root.innerHTML='<div class="dev-workbench-head"><div><strong id="fixtureTitle"></strong><p id="fixtureHelp"></p></div><span class="fixture-chip fixture-dev-label">DEV · FIXTURES</span></div><div class="dev-workbench-controls"><label><span id="fixtureScenarioLabel"></span><select id="fixtureScenario" aria-describedby="fixtureHint"></select></label><button id="fixtureAdd" class="secondary" type="button"></button><button id="fixtureReset" class="secondary" type="button"></button></div><p class="small" id="fixtureHint" aria-live="polite"></p>';
@@ -158,7 +171,7 @@ function createWorkbench(){
  $("fixtureReset").addEventListener("click",()=>{scenario="full";accessRequest=null;extra=[];completed.clear();filter="todo";selectedDate=null;month=new Date(new Date().getFullYear(),new Date().getMonth(),1);storeScenario();render()});
 }
 async function synchronize(){
- if(!active()){document.body.classList.remove("dev-fixture-active");$("devWorkbench")?.remove();document.querySelectorAll(".fixture-panel").forEach(x=>x.remove());return}
+ if(!active()){document.body.classList.remove("dev-fixture-active","dev-access-guided");lastGuidedKey="";$("devWorkbench")?.remove();document.querySelectorAll(".fixture-panel").forEach(x=>x.remove());return}
  if(!source){
   try{source=await import("./dev-fixtures.mjs");invitations=await import("./dev-invitations.mjs")}catch{return}
  }
