@@ -1,5 +1,5 @@
 /* Mi Congregación: static shell only. No account, API, session or private feed caching. */
-const CACHE="mi-congregacion-shell-v5-20261025";
+const CACHE="mi-congregacion-shell-v6-20261026";
 const SHELL=[
  "/","/index.html","/manifest.webmanifest","/brand-isotype.svg",
  "/brand-logo-dark.svg","/brand-logo-light.svg","/lucide-icons.svg",
