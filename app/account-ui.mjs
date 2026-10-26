@@ -2,7 +2,7 @@ import {HOLOTELES_AUTH_CONFIG as config} from "./holoteles-auth-config.mjs";
 import {createHolotelesAccountAdapter} from "./holoteles-account-adapter.mjs";
 import {createAccountPrivacyGate} from "./account-privacy-gate.mjs";
 const $=id=>document.getElementById(id);
-let adapter=null,activeMode="login",busy=false,generation=0,gate=null;
+let adapter=null,authClient=null,activeMode="login",busy=false,generation=0,gate=null;
 const safeMessage=(key)=>document.documentElement.lang==="en"?({
  pending:"Holoteles Core has not enabled sign-in for this app yet.",
  loading:"Connecting to Holoteles…",
@@ -68,6 +68,7 @@ async function initializeAuth(){
    auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true,flowType:"pkce",
     storageKey:"mi-congregacion-holoteles-auth"}
   });
+  authClient=client;
   adapter=createHolotelesAccountAdapter(client);
   $("accountForm").hidden=false;
   $("accountDialog").querySelector(".auth-status").hidden=true;
@@ -88,6 +89,22 @@ async function showVerified(user){
   $("connectedAccount").hidden=false;
   $("verifiedEmail").textContent=user.email||"";
   showStatus(safeMessage("signedIn"));
+  // Diagnostic only; this result NEVER unlocks private information.
+  const target=$("connectedAccount");
+  let info=target.querySelector("#devMembershipStatus");
+  if(!info){info=document.createElement("p");info.id="devMembershipStatus";info.setAttribute("role","status");target.append(info)}
+  info.textContent="Comprobando vinculación de congregación…";
+  try{
+   const {data}=await authClient.auth.getSession();
+   const token=data?.session?.access_token;
+   if(!token)throw Error("no token");
+   const result=await fetch("/api/dev/membership-status",{headers:{authorization:"Bearer "+token},cache:"no-store"});
+   const body=await result.json();
+   if(ticket!==generation||!devAllowed())return;
+   info.textContent=body.state==="membership_found"?"Existe una vinculación activa. Acceso privado aún no autorizado.":body.state==="not_linked"?"Cuenta verificada. Todavía no tienes una congregación vinculada.":"No se pudo comprobar la vinculación. Tu sesión sigue protegida.";
+  }catch{
+   if(ticket===generation&&devAllowed())info.textContent="No se pudo comprobar la vinculación. Tu sesión sigue protegida.";
+  }
   return;
  }
  if(!configAllowed())return;
