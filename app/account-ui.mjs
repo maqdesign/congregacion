@@ -53,7 +53,7 @@ async function refreshVerified(){
  try{
   const user=await adapter.getVerifiedUser();
   if(current!==generation)return;
-  if(user)showVerified(user);
+  if(user)await showVerified(user);
   else lockAccount();
  }catch{
   if(current===generation)lockAccount();
@@ -78,12 +78,25 @@ async function initializeAuth(){
   await refreshVerified();
  }catch{showStatus(safeMessage("error"))}
 }
-function showVerified(user){
- // Authentication proves identity only, never organization membership or private scopes.
- // Keep the private app locked until a Core server endpoint independently verifies:
- // session, canonical person link, active membership, capability and consent.
+async function showVerified(user){
+ // Identity alone cannot unlock. A same-origin Core server must decide.
  lockAccount();
- gate?.notice(safeMessage("signedIn"));
+ const ticket=generation;
+ if(devAllowed()||!configAllowed())return;
+ try{
+  const response=await fetch("/api/congregation/access",{method:"GET",credentials:"same-origin",cache:"no-store",headers:{"accept":"application/json"}});
+  if(ticket!==generation||devAllowed()||!configAllowed())return;
+  if(!response.ok)return;
+  const result=await response.json();
+  if(ticket!==generation||devAllowed()||!configAllowed())return;
+  if(result?.authorized===true&&result.identityVerified===true&&result.sessionActive===true&&result.membershipActive===true&&result.scopeGranted===true&&result.consentActive===true){
+   gate?.unlock();
+   $("accountForm").hidden=true;
+   $("connectedAccount").hidden=false;
+   $("verifiedEmail").textContent=user.email||"";
+   showStatus(safeMessage("signedIn"));
+  }
+ }catch{/* Keep application locked when Core is unavailable. */}
 }
 function showMode(mode){
  activeMode=mode;
@@ -105,7 +118,7 @@ $("accountForm").addEventListener("submit",async event=>{
   }else{
    const current=++generation;
    const user=await adapter.signIn({email,password});
-   if(current===generation)showVerified(user);
+   if(current===generation)await showVerified(user);
   }
  }catch{showStatus(safeMessage("error"))}
  finally{$("authPassword").value="";busy=false;$("submitAccount").disabled=false}
