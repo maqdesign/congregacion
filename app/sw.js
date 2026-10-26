@@ -1,5 +1,5 @@
 /* Mi Congregación: static shell only. No account, API, session or private feed caching. */
-const CACHE="mi-congregacion-shell-v6-20261026";
+const CACHE="mi-congregacion-shell-v7-20261026";
 const SHELL=[
  "/","/index.html","/manifest.webmanifest","/brand-isotype.svg",
  "/brand-logo-dark.svg","/brand-logo-light.svg","/lucide-icons.svg",
@@ -7,6 +7,7 @@ const SHELL=[
  "/dev-ui.mjs","/dev-fixtures.mjs","/dev-invitations.mjs","/pwa-shell.mjs"
 ];
 const STATIC=new Set(SHELL);
+const AUTH_ASSETS=new Set(["/account-ui.mjs","/holoteles-auth-config.mjs","/holoteles-account-adapter.mjs","/account-privacy-gate.mjs"]);
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)));
  // No skipWaiting here: don't interrupt an open editor or form.
@@ -42,6 +43,13 @@ self.addEventListener("fetch",event=>{
  if(!STATIC.has(url.pathname)||url.search)return;
  event.respondWith((async()=>{
   const cache=await caches.open(CACHE);
+  if(AUTH_ASSETS.has(url.pathname)){
+   try{
+    const fresh=await fetch(request,{cache:"no-store"});
+    if(fresh.ok&&fresh.type==="basic")await cache.put(url.pathname,fresh.clone());
+    return fresh;
+   }catch{return (await cache.match(url.pathname))||Response.error()}
+  }
   const cached=await cache.match(url.pathname);
   if(cached)return cached;
   const response=await fetch(request);
