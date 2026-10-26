@@ -82,7 +82,7 @@ async function showVerified(user){
  // Identity alone cannot unlock. A same-origin Core server must decide.
  lockAccount();
  const ticket=generation;
- if(devAllowed()){gate?.notice(safeMessage("signedIn"));return;}
+ if(devAllowed()){\n  // DEV identity feedback only; do NOT unlock private shell or assert membership.\n  $("accountForm").hidden=true;\n  $("connectedAccount").hidden=false;\n  $("verifiedEmail").textContent=user.email||"";\n  showStatus(safeMessage("signedIn"));\n  return;\n }
  if(!configAllowed())return;
  try{
   const response=await fetch("/api/congregation/access",{method:"GET",credentials:"same-origin",cache:"no-store",headers:{"accept":"application/json"}});
@@ -120,7 +120,7 @@ $("accountForm").addEventListener("submit",async event=>{
   }else{
    const current=++generation;
    const user=await adapter.signIn({email,password});
-   if(current===generation)await showVerified(user);
+   if(user)await showVerified(user);
   }
  }catch{showStatus(safeMessage("error"))}
  finally{$("authPassword").value="";busy=false;$("submitAccount").disabled=false}
