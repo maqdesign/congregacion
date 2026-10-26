@@ -191,6 +191,23 @@ body.dev-access-guided #yo>.fixture-panel>.card:last-child{margin-bottom:24px}
 body.dev-access-guided #yo>.fixture-panel .fixture-actions{gap:10px}
 body.dev-access-guided main{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
 body.dev-access-guided #devWorkbench{margin-bottom:12px}
+
+/* Mobile bottom navigation: reserve its complete footprint in the scrollable page. */
+:root{--bottom-nav-space:calc(106px + env(safe-area-inset-bottom,0px))}
+body.dev-fixture-active:not(.dev-access-guided) main{padding-bottom:calc(var(--bottom-nav-space) + 52px)}
+body:not(.access-unlinked):not(.auth-locked):not(.dev-access-guided) main{padding-bottom:calc(var(--bottom-nav-space) + 52px)}
+.bottom{z-index:35;min-height:76px;padding-bottom:max(12px,env(safe-area-inset-bottom,0px));box-sizing:content-box}
+.bottom button{min-height:56px}
+.bottom .lucide{pointer-events:none}
+main :is(button,input,select,textarea,[tabindex]):focus{scroll-margin-bottom:calc(var(--bottom-nav-space) + 24px)}
+@media(max-width:650px){
+ .bottom{padding:6px 12px max(8px,env(safe-area-inset-bottom,0px))}
+ .bottom button{min-height:52px;padding:5px 8px}
+ .bottom button .nav-text{font-size:12px}
+ .bottom button .lucide{width:22px;height:22px;margin-bottom:2px}
+ body.dev-fixture-active:not(.dev-access-guided) main{padding-bottom:calc(var(--bottom-nav-space) + 64px)}
+}
+@media print{.bottom{display:none!important}main{padding-bottom:0!important}}
 </style></head>
 <body class="access-unlinked"><header><div class="brand"><img class="brand-lockup" src="/brand-logo-dark.svg" alt="" width="175" height="69"><span id="brand" class="sr-only">Mi Congregación</span></div><div class="global-actions">
 <button id="openSearch" class="icon-action" type="button" aria-label="Buscar secciones" title="Buscar secciones"><svg class="lucide" aria-hidden="true"><use href="/lucide-icons.svg#search"></use></svg></button>
