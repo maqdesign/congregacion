@@ -82,7 +82,8 @@ async function showVerified(user){
  // Identity alone cannot unlock. A same-origin Core server must decide.
  lockAccount();
  const ticket=generation;
- if(devAllowed()||!configAllowed())return;
+ if(devAllowed()){gate?.notice(safeMessage("signedIn"));return;}
+ if(!configAllowed())return;
  try{
   const response=await fetch("/api/congregation/access",{method:"GET",credentials:"same-origin",cache:"no-store",headers:{"accept":"application/json"}});
   if(ticket!==generation||devAllowed()||!configAllowed())return;
