@@ -35,7 +35,7 @@ test("DEV is explicit and isolated from real account data",()=>{
  assert.match(html,/Datos ficticios · Sin sesión ni sincronización real/);
  assert.match(html,/src="\/dev-ui\.mjs"/);
  assert.match(html,/src="\/pwa-shell\.mjs"/);
- assert.match(read("holoteles-auth-config.mjs"),/enabled:false/);
+ assert.match(read("holoteles-auth-config.mjs"),/enabled:true/);
  assert.match(read("holoteles-auth-config.mjs"),/allowProduction:false/);
 });
 test("account onboarding distinguishes existing and new accounts without asking for credentials when disabled",()=>{
