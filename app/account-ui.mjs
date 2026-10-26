@@ -61,7 +61,7 @@ async function refreshVerified(){
 }
 async function initializeAuth(){
  if(adapter||!configAllowed())return;
- if(!gate){gate=createAccountPrivacyGate(document,{onLogin:()=>openAccess("login"),onSignup:()=>openAccess("signup")});lockAccount()}
+ if(!devAllowed()&&!gate){gate=createAccountPrivacyGate(document,{onLogin:()=>openAccess("login"),onSignup:()=>openAccess("signup")});lockAccount()}
  try{
   const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2.90.0");
   const client=createClient(config.supabaseUrl,config.publishableKey,{
@@ -76,7 +76,7 @@ async function initializeAuth(){
    else if(event==="SIGNED_IN"||event==="TOKEN_REFRESHED")void refreshVerified();
   });
   await refreshVerified();
- }catch{showStatus(safeMessage("error"))}
+ }catch{showStatus(safeMessage("error"));$("accountDialog").querySelector(".auth-status").hidden=false;}
 }
 async function showVerified(user){
  // Identity alone cannot unlock. A same-origin Core server must decide.
@@ -108,6 +108,7 @@ function showMode(mode){
 document.querySelectorAll("[data-auth-view]").forEach(b=>b.addEventListener("click",()=>showMode(b.dataset.authView)));
 $("accountDialog").addEventListener("close",()=>{$("authPassword").value="";showStatus("")});
 $("devModeToggle").addEventListener("change",()=>{void initializeAuth()});
+window.addEventListener("mi-congregacion:dev-change",()=>{void initializeAuth()});
 $("accountForm").addEventListener("submit",async event=>{
  event.preventDefault();if(!adapter||busy)return;
  busy=true;$("submitAccount").disabled=true;showStatus(safeMessage("loading"));
