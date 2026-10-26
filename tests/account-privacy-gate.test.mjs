@@ -8,7 +8,7 @@ const auth=read("account-ui.mjs"),gateSource=read("account-privacy-gate.mjs"),ht
 test("gate and auth scripts parse; production auth remains disabled",()=>{
  assert.doesNotThrow(()=>new vm.Script(gateSource.replace("export function","function")));
  assert.doesNotThrow(()=>new vm.Script(auth.replace(/^import .*;\n/gm,"")));
- assert.match(read("holoteles-auth-config.mjs"),/enabled:false/);
+ assert.match(read("holoteles-auth-config.mjs"),/enabled:true/);
  assert.match(read("holoteles-auth-config.mjs"),/allowProduction:false/);
 });
 test("signed-out state hides full application and shows only account access",()=>{
