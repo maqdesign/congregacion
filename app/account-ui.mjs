@@ -79,11 +79,11 @@ async function initializeAuth(){
  }catch{showStatus(safeMessage("error"))}
 }
 function showVerified(user){
- gate?.unlock();
- $("accountForm").hidden=true;
- $("connectedAccount").hidden=false;
- $("verifiedEmail").textContent=user.email||"";
- showStatus(safeMessage("signedIn"));
+ // Authentication proves identity only, never organization membership or private scopes.
+ // Keep the private app locked until a Core server endpoint independently verifies:
+ // session, canonical person link, active membership, capability and consent.
+ lockAccount();
+ gate?.notice(safeMessage("signedIn"));
 }
 function showMode(mode){
  activeMode=mode;
