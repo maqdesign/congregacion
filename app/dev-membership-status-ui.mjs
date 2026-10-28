@@ -18,5 +18,5 @@ export function getDemoMembershipView(status){
 export function renderDemoMembershipCard(status){
  const model=getDemoMembershipView(status);
  // The action is explanatory and intentionally disabled: no request submission is permitted.
- return `<section class="dev-membership-card" aria-labelledby="dev-membership-title" data-demo-membership="${escapeHTML(model.state)}"><p class="dev-membership-tag">DEV · Ejemplo ficticio · Sin conexión real</p><h2 id="dev-membership-title">${escapeHTML(model.title)}</h2><p>${escapeHTML(model.description)}</p>${model.action?`<button type="button" disabled aria-disabled="true" title="Solo demostración">${escapeHTML(model.action)} (demostración)</button>`:""}<p role="status">Esto es una simulación. No modifica tu cuenta ni concede permisos.</p></section>`;
+ return `<section class="dev-membership-card" aria-label="Estado de membresía de demostración" data-demo-membership="${escapeHTML(model.state)}"><p class="dev-membership-tag">DEV · Ejemplo ficticio · Sin conexión real</p><h2>${escapeHTML(model.title)}</h2><p>${escapeHTML(model.description)}</p>${model.action?`<button type="button" disabled aria-disabled="true" title="Solo demostración">${escapeHTML(model.action)} (demostración)</button>`:""}<p role="status">Esto es una simulación. No modifica tu cuenta ni concede permisos.</p></section>`;
 }
