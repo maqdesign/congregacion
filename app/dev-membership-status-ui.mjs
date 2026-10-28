@@ -3,6 +3,7 @@ const STATES=Object.freeze({
  unlinked:{title:"Vincula tu congregación",description:"Tu cuenta está lista. Para ver información de una congregación, primero necesitas una vinculación aprobada.",action:"Solicitar vinculación"},
  pending_review:{title:"Solicitud enviada",description:"Tu solicitud está pendiente de revisión por una persona autorizada.",action:null},
  person_verification_required:{title:"Falta verificar tu identidad",description:"Un responsable autorizado debe confirmar tu vínculo con el registro de la congregación antes de solicitar acceso.",action:null},
+ permission_limited:{title:"Agenda sin permiso",description:"La vinculación de demostración existe, pero no incluye permiso para consultar la agenda.",action:null},
  rejected:{title:"Solicitud no aprobada",description:"No se concedió acceso a la congregación. Consulta con un responsable autorizado si necesitas ayuda.",action:null},
  revoked:{title:"Acceso retirado",description:"Tu vinculación ya no está activa. La información privada permanece protegida.",action:null},
  approved:{title:"Vinculación aprobada",description:"La solicitud fue aprobada. El acceso a cada sección sigue dependiendo de permisos verificados.",action:null},
