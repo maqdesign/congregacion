@@ -90,7 +90,7 @@ function renderMembershipPreview(f){
   "registration-pending":"pending_review",revoked:"revoked","no-permission":"rejected",
   error:"unavailable",full:"approved",guest:"unlinked"
  };
- const state=states[f.scenarioId]||"unavailable";
+ const state=accessRequest?.status==="pending_review"?"pending_review":accessRequest?.status==="rejected"?"rejected":states[f.scenarioId]||"unavailable";
  return '<div class="fixture-membership-preview" aria-label="'+t("Estado de membresía ficticia","Sample membership state")+'">'+
  membershipUI.renderDemoMembershipCard(state)+'</div>';
 }
