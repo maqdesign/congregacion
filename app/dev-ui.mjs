@@ -7,7 +7,7 @@ const locale=()=>document.documentElement.lang==="en"?"en":"es";
 const t=(es,en)=>locale()==="en"?en:es;
 const safe=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const formatDate=s=>new Intl.DateTimeFormat(locale()==="en"?"en-US":"es-DO",{weekday:"short",day:"numeric",month:"short"}).format(new Date(s+"T12:00:00"));
-let lastGuidedKey="",invitations=null,accessRequest=null,source=null,scenario="full",month=new Date(),selectedDate=null,filter="todo",extra=[],completed=new Set(),version=0;
+let lastGuidedKey="",invitations=null,membershipUI=null,accessRequest=null,source=null,scenario="full",month=new Date(),selectedDate=null,filter="todo",extra=[],completed=new Set(),version=0;
 month=new Date(month.getFullYear(),month.getMonth(),1);
 function scenarioFromStorage(){try{return sessionStorage.getItem(scenarioKey)||"full"}catch{return "full"}}
 function storeScenario(){try{sessionStorage.setItem(scenarioKey,scenario)}catch{}}
@@ -83,6 +83,17 @@ function renderDemoInvitation(){
  (accessRequest.status==="pending_review"?'<div class="fixture-actions"><button type="button" class="secondary" data-demo-invite="approve">'+t("Simular aprobación en Servicio","Simulate approval in Service")+'</button><button type="button" class="secondary" data-demo-invite="reject">'+t("Simular rechazo","Simulate rejection")+'</button></div>':"")+
  '<button type="button" class="secondary" data-demo-invite="restart">'+t("Reiniciar solicitud","Restart request")+'</button></div>';
 }
+function renderMembershipPreview(f){
+ if(!membershipUI)return "";
+ const states={
+  unlinked:"unlinked", "signup-pending":"person_verification_required",
+  "registration-pending":"pending_review",revoked:"revoked",forbidden:"rejected",
+  error:"unavailable",full:"approved",guest:"unlinked"
+ };
+ const state=states[f.scenarioId]||"unavailable";
+ return '<div class="fixture-membership-preview" aria-label="'+t("Estado de membresía ficticia","Sample membership state")+'">'+
+ membershipUI.renderDemoMembershipCard(state)+'</div>';
+}
 function bindDemoInvites(){
  for(const button of document.querySelectorAll("[data-demo-invite]"))button.addEventListener("click",()=>{
   const action=button.dataset.demoInvite;
@@ -109,7 +120,7 @@ function renderMe(f){
  const actions=nextStep+'<div class="fixture-actions"><button type="button" class="secondary" data-fixture-action="login">'+t("Simular ingreso","Simulate sign-in")+'</button><button type="button" class="secondary" data-fixture-action="signup">'+t("Simular registro","Simulate signup")+'</button><button type="button" class="secondary" data-fixture-action="logout">'+t("Simular salida","Simulate sign-out")+'</button></div><p class="small">'+t("Ninguna acción inicia sesión, crea cuentas o vincula congregaciones reales.","No action signs in, creates accounts or links real congregations.")+'</p>';
  const mine=source.fixturePersonalAssignments(f);
  const assignmentBody=f.agendaState!=="ready"?'<p>'+safe(stateMessage(f))+'</p>':mine.length?'<div class="fixture-list">'+mine.map(a=>itemHtml(a,{personal:true})).join("")+'</div>':'<div class="empty">'+t("No tienes asignaciones publicadas.","You have no published assignments.")+'</div>';
- $("yo").querySelector(".fixture-panel").innerHTML='<div class="kicker">'+t("ESPACIO PERSONAL · DEMOSTRACIÓN","PERSONAL SPACE · DEMO")+'</div><h1>'+t("Yo","Me")+'</h1>'+card(t("Cuenta Holoteles","Holoteles Account"),'<div class="fixture-identity">'+identity+'</div><p>'+safe(f.organization||t("Congregación no vinculada","Congregation not linked"))+'</p>'+actions)+(guided?'':card(t("Mis asignaciones","My assignments"),assignmentBody));
+ $("yo").querySelector(".fixture-panel").innerHTML='<div class="kicker">'+t("ESPACIO PERSONAL · DEMOSTRACIÓN","PERSONAL SPACE · DEMO")+'</div><h1>'+t("Yo","Me")+'</h1>'+card(t("Cuenta Holoteles","Holoteles Account"),'<div class="fixture-identity">'+identity+'</div><p>'+safe(f.organization||t("Congregación no vinculada","Congregation not linked"))+'</p>'+renderMembershipPreview(f)+actions)+(guided?'':card(t("Mis asignaciones","My assignments"),assignmentBody));
 }
 function bindPanels(f){
  bindDemoInvites();
@@ -173,7 +184,7 @@ function createWorkbench(){
 async function synchronize(){
  if(!active()){document.body.classList.remove("dev-fixture-active","dev-access-guided");lastGuidedKey="";$("devWorkbench")?.remove();document.querySelectorAll(".fixture-panel").forEach(x=>x.remove());return}
  if(!source){
-  try{source=await import("./dev-fixtures.mjs");invitations=await import("./dev-invitations.mjs")}catch{return}
+  try{source=await import("./dev-fixtures.mjs");invitations=await import("./dev-invitations.mjs");membershipUI=await import("./dev-membership-status-ui.mjs")}catch{return}
  }
  if(!active())return;
  if(!source.FIXTURE_SCENARIOS.some(s=>s.id===scenario))scenario="full";
