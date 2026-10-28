@@ -87,7 +87,7 @@ function renderMembershipPreview(f){
  if(!membershipUI)return "";
  const states={
   unlinked:"unlinked", "signup-pending":"person_verification_required",
-  "registration-pending":"pending_review",revoked:"revoked",forbidden:"rejected",
+  "registration-pending":"pending_review",revoked:"revoked","no-permission":"rejected",
   error:"unavailable",full:"approved",guest:"unlinked"
  };
  const state=states[f.scenarioId]||"unavailable";
@@ -110,7 +110,7 @@ function bindDemoInvites(){
   render();
  });
 }
-function renderMe(f){
+function renderMe(f,guided){
  const identity=f.scenarioId==="signup-pending"?'<strong>'+t("Revisa tu correo","Check your email")+'</strong><p>'+t("El registro ficticio espera confirmación. No se envió ningún mensaje real.","Sample registration awaits confirmation. No real message was sent.")+'</p>':f.account==="verified"?'<strong>'+safe(f.displayName)+'</strong><p>'+safe(f.email)+'</p><span class="fixture-chip">'+t("Identidad simulada","Simulated identity")+'</span>':
  f.account==="expired"?'<strong>'+t("Sesión vencida","Session expired")+'</strong><p>'+t("Vuelve a iniciar sesión para consultar información.","Sign in again to view information.")+'</p>':
  '<strong>'+t("Sin iniciar sesión","Signed out")+'</strong><p>'+t("Puedes probar el recorrido de una cuenta nueva.","You can try the new-account journey.")+'</p>';
@@ -155,7 +155,7 @@ function render(){
  const guided=f.agendaState!=="ready";
  const guideKey=guided?scenario+":"+(accessRequest?.status||"none"):"ready";
  document.body.classList.toggle("dev-access-guided",guided);
- renderBoard(f);renderAgenda(f);renderMe(f);bindPanels(f);
+ renderBoard(f);renderAgenda(f);renderMe(f,guided);bindPanels(f);
  if(guided&&$("yo").hidden){
   document.querySelector('[data-tab="yo"]')?.click();
  }else if(!guided&&lastGuidedKey&&lastGuidedKey!=="ready"){
