@@ -87,7 +87,7 @@ function renderMembershipPreview(f){
  if(!membershipUI)return "";
  const states={
   unlinked:"unlinked", "signup-pending":"person_verification_required",
-  "registration-pending":"pending_review",revoked:"revoked","no-permission":"rejected",
+  "registration-pending":"pending_review",revoked:"revoked","no-permission":"permission_limited",
   error:"unavailable",full:"approved",guest:"unlinked"
  };
  const state=accessRequest?.status==="pending_review"?"pending_review":accessRequest?.status==="rejected"?"rejected":states[f.scenarioId]||"unavailable";
