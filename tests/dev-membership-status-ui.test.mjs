@@ -14,7 +14,7 @@ test("every synthetic membership state is safe and visibly labelled",()=>{
  }
 });
 test("a pending or denied request never exposes a submission button",()=>{
- for(const state of ["pending_review","rejected","revoked","person_verification_required","approved"])
+ for(const state of ["pending_review","rejected","revoked","person_verification_required","approved","permission_limited","unavailable"])
   assert.doesNotMatch(renderDemoMembershipCard(state),/<button/);
 });
 test("unlinked shows disabled demonstration, not a live action",()=>{
@@ -23,4 +23,18 @@ test("unlinked shows disabled demonstration, not a live action",()=>{
 test("unknown/untrusted states fail closed and do not inject HTML",()=>{
  assert.equal(getDemoMembershipView("<img src=x onerror=alert(1)>").state,"unavailable");
  assert.doesNotMatch(renderDemoMembershipCard("<img src=x onerror=alert(1)>"),/<img/);
+});
+
+test("agenda permission restriction is not a rejected membership",()=>{
+ const limited=getDemoMembershipView("permission_limited");
+ assert.equal(limited.title,"Agenda sin permiso");
+ assert.equal(limited.authorized,false);
+ assert.notEqual(limited.title,getDemoMembershipView("rejected").title);
+});
+test("membership section uses accessible label without duplicate heading ID",()=>{
+ for(const state of DEMO_MEMBERSHIP_STATES){
+  const html=renderDemoMembershipCard(state);
+  assert.match(html,/<section[^>]*aria-label=/);
+  assert.doesNotMatch(html,/id="dev-membership-title"/);
+ }
 });
