@@ -40,3 +40,9 @@ Core/ChatGPT auditó por SQL **solo lectura** la función real y confirmó retor
 
 ## QA Core P0 · actualización 2026-10-29
 Core PR #33 continúa DRAFT. SQL **review-only** añadió comprobación `membership_account_conflict` para no verificar un claim cuando su membresía de organización pertenece a otra cuenta; 8/8 tests estáticos PASS en V8, **sin Node/Postgres**. Core creó `docs/PERSON-CLAIM-P0-ISOLATED-QA.md` con 16 escenarios A/B y rollback. No existe Postgres aislado accesible en este entorno; no se aplicó SQL a Supabase compartido. Próximo: QA backend aislada por Codex, después autorización explícita de despliegue; Mi Congregación mantiene membresía real y agenda privada OFF.
+
+## Meta autónoma Codex Cloud · 2026-11-06
+- El usuario pidió un **goal autónomo** que Codex pueda perseguir sin consultas durante tareas locales reversibles. Instrucciones completas en `docs/AUTONOMOUS-MVP-GOAL.md` y `AGENTS.md`, enlazadas desde README. Rama de continuidad `feat/dev-membership-status-ui-20261028`, PR #18 DRAFT.
+- Objetivo: MVP local/DEV comprobable, pruebas Node verdes, QA HTTP/PWA, accesibilidad, estados de cuenta/membresía, agenda autorizada en mocks y Normal cerrado sin backend real. No inventar autorización ni declarar GO de producción.
+- Datos de fixture locales pueden regenerarse/borrarse; **Supabase y Core compartidos no son descartables**. No secrets, SQL remoto, despliegue, Actions, preview, merge, otros repos ni gastos.
+- Al retomar: inspeccionar git y trabajo previo, seguir AGENTS y la meta, ejecutar tests reales, corregir fallos, registrar SHA y handoff; si falta Core, avanzar en tareas independientes sin preguntar al usuario.
