@@ -43,3 +43,17 @@ Actualizado: 2026-11-12. Rama de hosting `chore/cloudflare-pages-private-preview
 - [ ] Suite Node completa en Codex checkout real; pruebas locales aisladas previas 5/5 PASS.
 
 **Esta sección actualiza el NO-GO previo de protección inicial:** el control Access **ya está configurado**, pero falta verificar respuesta HTTP del primer deployment. El nuevo proyecto no reemplaza producción Vercel.
+
+
+## MC-HOST-003 · Primer deployment de preview exitoso (2026-11-12)
+
+- [x] **Cloudflare Pages preview SUCCESS**: deployment `361c1ca3-4b6e-44c4-bbad-6af39e8f162c`, SHA `fbb3b334ac4c60227e427e2e7c9b905f999f356a`, rama `chore/cloudflare-pages-private-preview-20261112`.
+- [x] Build Cloudflare: Worker Functions **compiled successfully**, `_routes.json` encontrado, **1 regla `_headers` válida**, **21 archivos** subidos, `Success: Your site was deployed!`.
+- [x] URL hash `https://361c1ca3.mi-congregacion-preview.pages.dev`; alias de rama `https://chore-cloudflare-pages-priva.mi-congregacion-preview.pages.dev`.
+- [x] Access app `df3601f7-18cf-4392-9a8b-a168dff34adb` cubre ambos por wildcard, política reutilizable propietario; verificada por API Cloudflare.
+- [ ] **HTTP anónimo aún sin verificación de status**: la herramienta de consulta web no pudo acceder a URL hash ni alias (no expone status 302/403); no confundir inaccesibilidad con prueba de Access. Solicitar prueba en ventana privada o usar runner con salida HTTPS.
+- [ ] **QA navegador autenticado**: carga app, manifest, SW, endpoint DEV 401 sin token, móvil/iPad, errores, callback Auth sin modificar Supabase. El build PASS no demuestra estos flujos.
+- [ ] **Suite Node completa** en checkout Codex; las 5 pruebas del adaptador fueron PASS aisladas en Node 22, no suite completa.
+- [x] **Producción sin cambios**: Vercel y dominios originales, Supabase/Auth/RLS intactos; `main` desactivado para deploy en nuevo Pages.
+
+**Estado:** PREVIEW DESPLEGADA + ACCESS CONFIGURADO, **pendiente QA HTTP/browser**. No datos privados publicados intencionalmente. Documentación actualizada con prefijo `[CF-Pages-Skip]` para no disparar builds de preview innecesarios.
