@@ -19,7 +19,7 @@
 - **Root directory:** raíz del repositorio; **framework preset:** None; **build command:** vacío; **build output directory:** `app`. Configurar la **production branch** como `main` solo en un proyecto cuyo primer despliegue esté ya protegido; de lo contrario, no conectarlo.
 - Función API: `functions/api/dev/membership-status.js` importa la lógica existente. No publicar esta función sin validar en runtime Pages, incluida respuesta 401 anónima, 405 método inválido y 503 ante backend indisponible; jamás tratar su respuesta como autorización privada.
 - `_routes.json` restringe invocaciones Functions al diagnóstico DEV; la entrega de assets estáticos no debe contar como invocación de función. Validar build de Pages y `/api/dev/membership-status` con pruebas reales antes de GO.
-- `app/vercel.json` **no es** configuración de Cloudflare. Revisar equivalentes de headers de seguridad para Pages en un incremento posterior; no copiar sin verificar las reglas actuales.
+- `app/vercel.json` **no es** configuración de Cloudflare. Se añadió `app/_headers` para conservar los encabezados estáticos básicos en Pages; requiere smoke HTTP real en el deployment protegido.
 
 ## 3. Privacidad de previews: gate obligatorio antes de crear/compartir
 
@@ -46,7 +46,7 @@ Pruebas obligatorias antes de compartir URL:
 - **Rollback inmediato:** conservar `congregacion.holoteles.app` y `congregation.holoteles.app` en Vercel, sin tocar DNS; no desconectar el proyecto Vercel. Para preview: deshabilitar proyecto/branch Pages o revertir commit sin cambiar el host actual.
 - **GO preview privada:** build Pages PASS + Functions PASS + protección de TODOS los hostnames y prueba anónima bloqueada, sin costes.
 - **GO producción:** autorización aparte; seguridad Auth/RLS Core, endpoints reales y flujos críticos, callbacks aprobados, QA iPhone/Safari, sesiones y datos por origen, TTL/Cache-Control, restauración y retorno a Vercel ensayados.
-- **Estado actual:** compatible para shell estático con adaptación API preparada, **NO-GO para preview/deploy** hasta garantía Access previa al primer build y pruebas runtime. No se han ejecutado `node --test`, build Pages, smoke HTTP ni prueba anónima en esta ejecución: solo auditoría de fuentes, Cloudflare API/Vercel API y verificación estática de archivos.
+- **Estado actual:** compatible para shell estático con adaptación API preparada, **NO-GO para preview/deploy** hasta garantía Access previa al primer build y pruebas runtime. Se ejecutaron **5/5 pruebas Node PASS en un directorio local reconstruido manualmente** con los contenidos del handler, adapter, rutas, headers y test (Node 22.16.0). **No equivale a checkout Git completo ni a ejecución Pages**. No se ejecutaron la suite completa, build Pages, smoke HTTP ni prueba anónima.
 
 ## Referencias
 
