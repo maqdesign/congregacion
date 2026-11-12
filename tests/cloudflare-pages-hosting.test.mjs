@@ -32,3 +32,10 @@ test("Pages adapter cannot grant private agenda access",()=>{
  const bridge=readFileSync(new URL("../functions/api/dev/membership-status.js",import.meta.url),"utf8");
  assert.doesNotMatch(bridge,/service_role|privateAccess:true|allowProduction:true/);
 });
+
+test("Cloudflare static headers preserve baseline browser protections",()=>{
+ const headers=readFileSync(new URL("../app/_headers",import.meta.url),"utf8");
+ for(const header of ["X-Content-Type-Options: nosniff","Referrer-Policy: strict-origin-when-cross-origin","X-Frame-Options: DENY","Permissions-Policy: camera=(), microphone=(), geolocation=()","Cache-Control: no-cache"]){
+  assert.ok(headers.includes(header),`Missing Pages header: ${header}`);
+ }
+});
