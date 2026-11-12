@@ -30,3 +30,16 @@ Actualizado: 2026-11-12. Rama de hosting `chore/cloudflare-pages-private-preview
 ## Próximo responsable
 
 **Mi Congregación/Codex:** ejecutar pruebas Node y verificar el adaptador en entorno local. **Core/Cloudflare:** resolver protección previa al primer deploy y revisar hostnames. **Propietario:** sin acción inmediata; no solicitar credenciales ni permisos adicionales para la auditoría.
+
+
+## MC-HOST-002 · Activación real de Pages/Access (2026-11-12)
+
+- [x] Proyecto **Cloudflare Pages creado**: `mi-congregacion-preview` (`mi-congregacion-preview.pages.dev`), conectado por GitHub a `maqdesign/congregacion`, sin GitHub Actions.
+- [x] Configurado `production_branch:main` con **production_deployments_enabled:false**; solo previews automáticas de `chore/cloudflare-pages-private-preview-20261112`; output `app`, build vacío.
+- [x] **Cloudflare Access creado antes del primer despliegue**: aplicación `df3601f7-18cf-4392-9a8b-a168dff34adb`, hostnames `mi-congregacion-preview.pages.dev` y `*.mi-congregacion-preview.pages.dev`. Reutiliza política existente de propietario `f01794fc-82d3-4e2b-adf2-6760ebc8f9a0` (allow solo identidad del propietario). Sin acceso anónimo autorizado.
+- [ ] Esperar deployment de preview de este push y verificar build, funciones y prueba HTTP anónima (Access 302/401/403).
+- [ ] Probar como propietario, incluyendo PWA y assets, desde navegador autenticado; no tocar callbacks de Supabase.
+- [ ] Conservar Vercel y dominios actuales sin cambios.
+- [ ] Suite Node completa en Codex checkout real; pruebas locales aisladas previas 5/5 PASS.
+
+**Esta sección actualiza el NO-GO previo de protección inicial:** el control Access **ya está configurado**, pero falta verificar respuesta HTTP del primer deployment. El nuevo proyecto no reemplaza producción Vercel.
