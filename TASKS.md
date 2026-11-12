@@ -11,14 +11,15 @@ Actualizado: 2026-11-12. Rama de hosting `chore/cloudflare-pages-private-preview
 - [x] Inventariar Vercel: proyecto `mi-congregacion`, último prod READY `dpl_ARUjxKLAfYU6cDqj2R9h6Ju2JNEb`, SSO `all_except_custom_domains`, dominios propios sin cobertura de ese ajuste.
 - [x] Inventariar Cloudflare: cuatro proyectos Pages existentes, **ninguno de Mi Congregación**.
 - [x] Auditar output estático `app/`, endpoint DEV estilo Vercel, SW/cache, Auth/callback, storage por origen y rollback.
-- [x] Preparar adaptador Pages `functions/api/dev/membership-status.js`, rutas acotadas `app/_routes.json` y cuatro pruebas Node en `tests/cloudflare-pages-hosting.test.mjs`. **Aún sin ejecución Node/Pages**.
+- [x] Preparar adaptador Pages `functions/api/dev/membership-status.js`, rutas acotadas `app/_routes.json` y cinco pruebas Node en `tests/cloudflare-pages-hosting.test.mjs`. **5/5 PASS en copia reconstruida local Node 22; sin QA en checkout/Pages**.
+- [x] Preparar `app/_headers` con encabezados estáticos de seguridad equivalentes a Vercel; sin smoke HTTP Pages.
 - [ ] Ejecutar suite `node --test tests/*.test.mjs` y smoke local, corregir incompatibilidades sin debilitar seguridad.
 - [ ] Demostrar que se puede proteger el hostname base y **todas** las previews Pages **antes del primer deploy**; sin prueba previa no crear Pages ni conectar Git.
 - [ ] Configurar proyecto GitHub→Pages solo tras protección confirmada: raíz repo, output `app`, sin build command; rama productiva explícita, sin mover DNS.
 - [ ] Comprobar 401/403 o redirección Access desde sesión anónima para hostname base, alias y hash antes de compartir URL.
 - [ ] QA Functions, SW, PWA, móvil/desktop, Auth redirects aprobados, aislamiento de datos por origen y rollback; producción solo con autorización independiente.
 
-**Evidencia:** consulta read-only GitHub, Vercel, Cloudflare API y documentación oficial. Sin deploy, preview, prueba HTTP anónima, Node ni gastos en esta ejecución. **SHA de preparación:** ver HEAD de esta rama al retomar; no confundir SHA documental con build publicado.
+**Evidencia:** consulta read-only GitHub, Vercel, Cloudflare API y documentación oficial. Sin deploy, preview, prueba HTTP anónima ni gastos en esta ejecución. 5/5 Node PASS solo sobre copia reconstruida de los archivos relevantes; suite completa no ejecutada. **SHA de preparación:** ver HEAD de esta rama al retomar; no confundir SHA documental con build publicado.
 
 ## Bloqueos de integración que NO cambian por hosting
 
