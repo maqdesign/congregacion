@@ -19,7 +19,7 @@ Actualizado: 2026-11-12. Rama de hosting `chore/cloudflare-pages-private-preview
 - [ ] Comprobar 401/403 o redirección Access desde sesión anónima para hostname base, alias y hash antes de compartir URL.
 - [ ] QA Functions, SW, PWA, móvil/desktop, Auth redirects aprobados, aislamiento de datos por origen y rollback; producción solo con autorización independiente.
 
-**Evidencia:** consulta read-only GitHub, Vercel, Cloudflare API y documentación oficial. Sin deploy, preview, prueba HTTP anónima ni gastos en esta ejecución. 5/5 Node PASS solo sobre copia reconstruida de los archivos relevantes; suite completa no ejecutada. **SHA de preparación:** ver HEAD de esta rama al retomar; no confundir SHA documental con build publicado.
+**Evidencia:** consulta read-only GitHub, Vercel, Cloudflare API y documentación oficial. Sin deploy, preview, prueba HTTP anónima ni gastos en esta ejecución. 5/5 Node PASS solo sobre copia reconstruida de los archivos relevantes; suite completa no ejecutada. **SHAs de evidencia:** adaptador `e708f52902a3087f99be1318fabbd5c9066d5b77`; rutas `61f77d377f5e123eba635375db5a44d514bf5915`; headers `6b37a25d397ae6bffc52e238c791a49ee5a5a8e1`; tests 5 casos `d45df626b9c0b436be98c52f349b6d6559a36de0`; contexto `d7be359b8b76dd625156362a85a20bbba794f5a9`. Verificar HEAD al retomar. Ninguno es un build publicado.
 
 ## Bloqueos de integración que NO cambian por hosting
 
