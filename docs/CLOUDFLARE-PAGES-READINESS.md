@@ -57,3 +57,16 @@ Pruebas obligatorias antes de compartir URL:
 - Protección dominio base Pages: https://developers.cloudflare.com/pages/platform/known-issues/#enable-access-on-your-pagesdev-domain
 
 **Responsable siguiente:** Mi Congregación/Codex ejecuta `node --test tests/*.test.mjs`, smoke HTTP estático y QA del adaptador; Cloudflare/Core valida método de protección de previews **antes** de crear el proyecto. Sin cambios Supabase/Auth/RLS, producción, DNS, gastos o GitHub Actions.
+
+
+## Actualización ejecutada · 2026-11-12 (sustituye NO-GO inicial por prueba en curso)
+
+**Pages GitHub activado:** proyecto `mi-congregacion-preview`, repo `maqdesign/congregacion`, production branch `main` con despliegues de producción desactivados; previews automáticas únicamente de `chore/cloudflare-pages-private-preview-20261112`. Output `app`, sin build command. El proyecto no tiene dominios personalizados ni reemplaza Vercel.
+
+**Access ya existe, configurado antes del primer deployment:** aplicación `df3601f7-18cf-4392-9a8b-a168dff34adb`, destinos exactos `mi-congregacion-preview.pages.dev` y `*.mi-congregacion-preview.pages.dev`, política reusable de propietario `f01794fc-82d3-4e2b-adf2-6760ebc8f9a0`. Equivale al patrón de Grafo Git; no es una promesa de privacidad sin verificar en HTTP.
+
+**Primer deployment:** `d8415c92-9b82-4fa7-a1c4-bb35f16b19c1`, commit `33e21c478cef6d405e382ffeb6a30fb5f69f12fe`, **queued** al consultar. El proyecto está creado, pero no se puede declarar READY ni afirmar que el endpoint y el acceso funcionan en vivo hasta que finalice y pase el smoke. Una segunda confirmación sin bandera `[skip ci]` se utiliza para asegurar que GitHub Pages procese el build.
+
+**Autorización del propietario:** permite iniciar previews de prueba, incluso si el shell DEV estático resultase público; sigue prohibido usar datos reales/confidenciales, mover dominios, modificar Supabase/Auth/RLS o alterar producción. En la configuración actual Access exige identidad de propietario.
+
+**Próximos pasos:** comprobar resultado de build en Cloudflare, GET anónimo a URL hash y alias (debe exigir Access), GET autenticado del shell y `/api/dev/membership-status`, suite Node completa. Sin esperar a Reuniones ni Mipoki.
