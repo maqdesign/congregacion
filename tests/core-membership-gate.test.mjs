@@ -6,9 +6,11 @@ const config=readFileSync(new URL("../app/holoteles-auth-config.mjs",import.meta
 test("an authenticated identity cannot unlock congregation content without a Core authorization decision",()=>{
  const verified=src.match(/async function showVerified\(user\)\{([\s\S]*?)\n\}/)?.[1];
  assert.ok(verified,"showVerified present");
- assert.doesNotMatch(verified,/gate\?\.unlock\(/);
  assert.match(verified,/lockAccount\(\)/);
- assert.match(verified,/gate\?\.notice\(safeMessage\("signedIn"\)\)/);
+ const diagnostic=verified.slice(0,verified.indexOf('if(!configAllowed())return;'));
+ assert.doesNotMatch(diagnostic,/gate\?\.unlock\(/);
+ assert.match(verified,/result\?\.authorized===true&&result.identityVerified===true&&result.sessionActive===true&&result.membershipActive===true&&result.scopeGranted===true&&result.consentActive===true/);
+ assert.match(verified,/if\(ticket!==generation\|\|devAllowed\(\)\|\|!configAllowed\(\)\)return/);
 });
 test("private account remains disabled in production until Core gates pass",()=>{
  assert.match(config,/enabled:true/);

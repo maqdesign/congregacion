@@ -12,7 +12,7 @@ test("Holoteles shell preserves app identity and global control order",()=>{
  assert.ok(indexes.every(x=>x>=0));
  assert.deepEqual(indexes,[...indexes].sort((a,b)=>a-b));
  assert.match(html,/aria-label="Agregar: disponible cuando se habiliten acciones autorizadas"/);
- assert.match(html,/class="icon-action" type="button" disabled/);
+ assert.match(html,/class="icon-action" type="button" hidden disabled/);
  assert.doesNotMatch(html,/<button id="language"/);
  assert.match(html,/id="settingsDialog"/);
 });

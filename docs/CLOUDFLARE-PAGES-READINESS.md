@@ -1,5 +1,10 @@
 # Mi Congregación · Auditoría GitHub → Cloudflare Pages
 
+## Alcance vigente · 2026-11-12
+
+El objetivo explícito del usuario autoriza trabajar y hacer pushes en `chore/cloudflare-pages-private-preview-20261112` para previews continuas mediante la integración GitHub→Pages existente. PR funcional de referencia #18. Conservar Access y producción Pages desactivada; no merge, Actions, DNS, Supabase compartido, Auth/RLS real, datos privados ni gastos. Esta autorización actualiza las restricciones históricas de preview que siguen más abajo. Normal privado continúa cerrado. Evidencia vigente: `docs/PREVIEW-MVP-HANDOFF-2026-11-12.md`.
+
+
 **Fecha:** 2026-11-12. **Estado:** PREPARACIÓN, **NO-GO para crear preview pública, mover DNS o cambiar producción**. Rama: `chore/cloudflare-pages-private-preview-20261112`, base `feat/dev-membership-status-ui-20261028` (PR #18 DRAFT). Decisión Core: `maqdesign/holoteles/docs/ECOSYSTEM-INTEGRATION-CHAT.md` rama `feat/holoteles-app-phase1`, entrada 2026-11-12.
 
 ## 1. Inventario observado (solo lectura)
@@ -70,3 +75,7 @@ Pruebas obligatorias antes de compartir URL:
 **Autorización del propietario:** permite iniciar previews de prueba, incluso si el shell DEV estático resultase público; sigue prohibido usar datos reales/confidenciales, mover dominios, modificar Supabase/Auth/RLS o alterar producción. En la configuración actual Access exige identidad de propietario.
 
 **Próximos pasos:** comprobar resultado de build en Cloudflare, GET anónimo a URL hash y alias (debe exigir Access), GET autenticado del shell y `/api/dev/membership-status`, suite Node completa. Sin esperar a Reuniones ni Mipoki.
+
+## Iteración MVP / preview continua · 2026-11-12
+
+Suite completa: 27 archivos / 134 casos PASS, cero FAIL/SKIP. Navegador local: 386 PASS; PWA: 15 PASS; workerd: 12 PASS. Se corrigieron cinco fallos históricos y regresiones, UX ES/EN responsive, foco, Auth cerrado en Pages, caché pública y errores upstream. Ver archivos, diagnóstico, límites, comandos y pendientes en `docs/PREVIEW-MVP-HANDOFF-2026-11-12.md`. Access y configuración GitHub→Pages verificados por API; HTTP real pendiente por rechazo CONNECT del proxy, sin prueba de sesión propietaria. No declarar Access HTTP PASS. Publicación y SHA se registrarán tras build. Producción NO-GO; contratos privados/callbacks y revisión Core pendientes.

@@ -26,5 +26,10 @@
         }
       ]
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "chore/cloudflare-pages-private-preview-20261112": false
+    }
+  }
 }

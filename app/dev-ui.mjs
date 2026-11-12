@@ -9,7 +9,7 @@ const safe=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"
 const formatDate=s=>new Intl.DateTimeFormat(locale()==="en"?"en-US":"es-DO",{weekday:"short",day:"numeric",month:"short"}).format(new Date(s+"T12:00:00"));
 let lastGuidedKey="",invitations=null,membershipUI=null,accessRequest=null,source=null,scenario="full",month=new Date(),selectedDate=null,filter="todo",extra=[],completed=new Set(),version=0;
 month=new Date(month.getFullYear(),month.getMonth(),1);
-function scenarioFromStorage(){try{return sessionStorage.getItem(scenarioKey)||"full"}catch{return "full"}}
+function scenarioFromStorage(fallback="full"){try{return sessionStorage.getItem(scenarioKey)||fallback}catch{return fallback}}
 function storeScenario(){try{sessionStorage.setItem(scenarioKey,scenario)}catch{}}
 function fixture(){
  const base=source.buildFixtureScenario(scenario);
@@ -92,7 +92,7 @@ function renderMembershipPreview(f){
  };
  const state=accessRequest?.status==="pending_review"?"pending_review":accessRequest?.status==="rejected"?"rejected":states[f.scenarioId]||"unavailable";
  return '<div class="fixture-membership-preview" aria-label="'+t("Estado de membresía ficticia","Sample membership state")+'">'+
- membershipUI.renderDemoMembershipCard(state)+'</div>';
+ membershipUI.renderDemoMembershipCard(state,locale())+'</div>';
 }
 function bindDemoInvites(){
  for(const button of document.querySelectorAll("[data-demo-invite]"))button.addEventListener("click",()=>{
@@ -134,12 +134,15 @@ function bindPanels(f){
   const action=btn.dataset.fixtureAction;
   scenario=({login:"full",signup:"signup-pending",confirm:"unlinked",link:"full",logout:"guest"})[action];accessRequest=null;extra=[];completed.clear();selectedDate=null;storeScenario();render();
   // Re-rendering replaces the clicked button; move keyboard/VoiceOver focus to the next step.
-  (action==="signup"?document.querySelector('[data-fixture-action="confirm"]'):action==="confirm"?document.querySelector('[data-fixture-action="link"]'):$("fixtureScenario"))?.focus();
+  (action==="signup"?document.querySelector('[data-fixture-action="confirm"]'):action==="confirm"?document.querySelector('[data-demo-invite="link"]'):$("fixtureScenario"))?.focus();
  });
  for(const btn of document.querySelectorAll("[data-fixture-complete]"))btn.addEventListener("click",()=>{const id=btn.dataset.fixtureComplete;completed.has(id)?completed.delete(id):completed.add(id);render()});
 }
 function render(){
  if(!active()||!source)return;
+ const focused=document.activeElement;
+ const focusAttribute=["data-fixture-filter","data-fixture-month","data-fixture-day","data-fixture-complete"].find(name=>focused?.hasAttribute(name));
+ const focusValue=focusAttribute?focused.getAttribute(focusAttribute):null;
  const f=fixture(),sel=$("fixtureScenario");
  sel.replaceChildren();
  for(const s of source.FIXTURE_SCENARIOS){
@@ -156,6 +159,9 @@ function render(){
  const guideKey=guided?scenario+":"+(accessRequest?.status||"none"):"ready";
  document.body.classList.toggle("dev-access-guided",guided);
  renderBoard(f);renderAgenda(f);renderMe(f,guided);bindPanels(f);
+ if(focusAttribute){
+  [...document.querySelectorAll('['+focusAttribute+']')].find(element=>element.getAttribute(focusAttribute)===focusValue)?.focus({preventScroll:true});
+ }
  if(guided&&$("yo").hidden){
   document.querySelector('[data-tab="yo"]')?.click();
  }else if(!guided&&lastGuidedKey&&lastGuidedKey!=="ready"){
@@ -183,6 +189,7 @@ function createWorkbench(){
 }
 async function synchronize(){
  if(!active()){document.body.classList.remove("dev-fixture-active","dev-access-guided");lastGuidedKey="";$("devWorkbench")?.remove();document.querySelectorAll(".fixture-panel").forEach(x=>x.remove());return}
+ scenario=scenarioFromStorage(scenario);
  if(!source){
   try{source=await import("./dev-fixtures.mjs");invitations=await import("./dev-invitations.mjs");membershipUI=await import("./dev-membership-status-ui.mjs")}catch{return}
  }

@@ -5,5 +5,6 @@ export const HOLOTELES_AUTH_CONFIG=Object.freeze({
   provider:"holoteles-core",
   supabaseUrl:"https://hghpliyjctmctjgrrbcs.supabase.co",
   publishableKey:"sb_publishable_Ii3Stg7gugiXkuELmXAeiQ__ZkImURs",
-  allowProduction:false
+  allowProduction:false,
+  pagesAuthApproved:false
 });

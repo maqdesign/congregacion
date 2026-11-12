@@ -28,7 +28,7 @@ test("account details are navigable without implying sign-in is enabled",()=>{
  assert.match(html,/id="accountDetails"/);
  assert.match(script,/\$\("accountDetails"\)\.addEventListener\("click",\(\)=>navigate\("yo"\)\)/);
  assert.match(html,/Cuenta Holoteles/);
- assert.match(html,/Sin datos conectados/);
+ assert.match(html,/Sin datos privados conectados/);
 });
 test("PDF print background uses brand cream instead of transparent black",()=>{
  assert.match(html,/@media print\{html,body\{background:#F6EFE6!important/);

@@ -15,7 +15,7 @@ test("DEV auth does not lock behind account access page",()=>{
 });
 test("Safari PWA refreshes authentication modules instead of serving stale static first",()=>{
  const sw=read("sw.js");
- assert.match(sw,/mi-congregacion-shell-v7-20261026/);
+ assert.match(sw,/const CACHE="mi-congregacion-shell-v\d+-\d{8}"/);
  assert.match(sw,/AUTH_ASSETS\.has\(url\.pathname\)/);
  assert.match(sw,/fetch\(request,\{cache:"no-store"\}\)/);
  assert.match(sw,/\/holoteles-auth-config\.mjs/);

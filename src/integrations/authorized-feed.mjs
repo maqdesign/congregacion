@@ -43,7 +43,7 @@ function checkRecords(items,org) {
 }
 export function projectAuthorizedFeed({envelope,context,from,to,now=Date.now(),filter="todo"}) {
   checkWindow(from,to);
-  if (!context?.authenticated || context?.membership?.status !== "active" ||
+  if (context?.authenticated !== true || context?.membership?.status !== "active" ||
       typeof context.membership.organizationId !== "string" ||
       !context.membership.organizationId) invalid("not-authorized");
   if (!isObject(envelope) || envelope.schemaVersion !== 1 ||
@@ -51,7 +51,7 @@ export function projectAuthorizedFeed({envelope,context,from,to,now=Date.now(),f
       envelope.state !== "published" ||
       !isTimezone(envelope.timeZone)) invalid("invalid-envelope");
   const created=stamp(envelope.generatedAt),expires=stamp(envelope.expiresAt);
-  if (!Number.isFinite(created) || !Number.isFinite(expires) ||
+  if (!Number.isFinite(now) || !Number.isFinite(created) || !Number.isFinite(expires) ||
       created > now + 60000 || expires <= now || expires <= created) invalid("stale");
   const org=envelope.organizationId;
   const schedules=envelope.schedules,exceptions=envelope.exceptions,activities=envelope.activities;
@@ -60,7 +60,8 @@ export function projectAuthorizedFeed({envelope,context,from,to,now=Date.now(),f
   if (schedules.some(x=>!["reuniones","servicio"].includes(x.sourceApp) ||
       x.sourceApp !== x.category || !isTime(x.time))) invalid("invalid-records");
   if (exceptions.some(x=>!["reuniones","servicio"].includes(x.sourceApp) ||
-      !validDate(x.date))) invalid("invalid-records");
+      !validDate(x.date) || !["cancelled","changed"].includes(x.kind) ||
+      (x.kind === "changed" && x.time != null && !isTime(x.time)))) invalid("invalid-records");
   if (activities.some(x=>!validDate(x.date) || !isTime(x.time))) invalid("invalid-records");
   const scheduleById=new Map(schedules.map(x=>[x.id,x]));
   if (exceptions.some(x=>!scheduleById.has(x.scheduleId) ||
@@ -79,6 +80,7 @@ export async function loadAuthorizedAgenda({
   fetchImpl=fetch,endpoint=AGENDA_ENDPOINT,context,from,to,filter="todo",signal
 }={}) {
   checkWindow(from,to);
+  if(signal?.aborted)invalid("aborted");
   // An absolute/cross-origin URL or arbitrary path is never accepted.
   if (endpoint !== AGENDA_ENDPOINT) invalid("unapproved-endpoint");
   const params=new URLSearchParams({from,to});
@@ -88,20 +90,22 @@ export async function loadAuthorizedAgenda({
       method:"GET",credentials:"same-origin",cache:"no-store",
       headers:{Accept:"application/json"},signal,redirect:"error"
     });
-  } catch { invalid("network"); }
+  } catch { invalid(signal?.aborted?"aborted":"network"); }
+  if(signal?.aborted)invalid("aborted");
   if (response.status===401 || response.status===403) invalid("not-authorized");
   if (!response.ok) invalid("unavailable");
-  if (!response.headers.get("content-type")?.toLowerCase().includes("application/json"))
+  if (response.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/json")
     invalid("invalid-response");
   if (Number(response.headers.get("content-length"))>MAX_BYTES) invalid("invalid-response");
   let envelope;
   try {
     const raw=await response.text();
-    if (raw.length>MAX_BYTES) invalid("invalid-response");
+    if (new TextEncoder().encode(raw).byteLength>MAX_BYTES) invalid("invalid-response");
     envelope=JSON.parse(raw);
   } catch(e) {
     if (e instanceof AgendaUnavailableError) throw e;
     invalid("invalid-response");
   }
+  if(signal?.aborted)invalid("aborted");
   return projectAuthorizedFeed({envelope,context,from,to,filter});
 }

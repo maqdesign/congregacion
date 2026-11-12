@@ -24,3 +24,9 @@ test("database outage does not claim absence of membership",async()=>{
  const result=await handleMembershipStatus(request("synthetic.token.signature"),{fetcher:async()=>responses.shift()});
  assert.equal(result.status,503);
 });
+test("authority outage does not claim the verified user signed out",async()=>{
+ for(const status of [302,429,500,503]){
+  const result=await handleMembershipStatus(request("synthetic.token.signature"),{fetcher:async(url,options)=>{assert.equal(options.redirect,"manual");return respond({},status)}});
+  assert.equal(result.status,503);assert.deepEqual(await result.json(),{state:"unavailable"});
+ }
+});

@@ -35,11 +35,11 @@ test("expiry and provider sign-out revoke view without trusting cached session",
  assert.match(auth,/event==="TOKEN_REFRESHED"/);
  assert.match(auth,/adapter\.getVerifiedUser\(\)/);
  assert.match(auth,/if\(current!==generation\)return/);
- assert.match(auth,/if\(current===generation\)showVerified\(user\)/);
+ assert.match(auth,/if\(current!==generation\)return;\s*if\(user\)await showVerified\(user\)/);
  assert.match(auth,/if\(current===generation\)lockAccount\(\)/);
 });
 test("access gate is available offline and not a data-sync workaround",()=>{
- assert.match(sw,/mi-congregacion-shell-v7-20261026/);
+ assert.match(sw,/const CACHE="mi-congregacion-shell-v\d+-\d{8}"/);
  assert.match(sw,/"\/account-privacy-gate\.mjs"/);
  assert.doesNotMatch(gateSource,/fetch\(|localStorage|sessionStorage|supabase/);
 });

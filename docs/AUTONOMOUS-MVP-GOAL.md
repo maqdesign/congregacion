@@ -1,5 +1,10 @@
 # Mi Congregación · Meta autónoma de Codex (MVP)
 
+## Alcance vigente · 2026-11-12
+
+El objetivo explícito del usuario autoriza trabajar y hacer pushes en `chore/cloudflare-pages-private-preview-20261112` para previews continuas mediante la integración GitHub→Pages existente. PR funcional de referencia #18. Conservar Access y producción Pages desactivada; no merge, Actions, DNS, Supabase compartido, Auth/RLS real, datos privados ni gastos. Esta autorización actualiza las restricciones históricas de preview que siguen más abajo. Normal privado continúa cerrado. Evidencia vigente: `docs/PREVIEW-MVP-HANDOFF-2026-11-12.md`.
+
+
 **Fuente de trabajo:** repositorio `maqdesign/congregacion`, rama `feat/dev-membership-status-ui-20261028` (PR #18 DRAFT). Esta meta es un plan operativo; no declara aprobada la integración real con Holoteles Core. **No crear una segunda app, ni un nuevo servicio de identidad.**
 
 ## Resultado perseguido

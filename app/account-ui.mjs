@@ -24,6 +24,9 @@ function showStatus(text){$("accountFormStatus").textContent=text}
 function devAllowed(){try{return sessionStorage.getItem("mi-congregacion-dev-ui-v1")==="1"}catch{return false}}
 function configAllowed(){
  if(!config.enabled||!config.supabaseUrl||!config.publishableKey)return false;
+ // Pages callback origins have not been approved by Core. Neither a query nor
+ // DEV mode may initialize the shared Auth provider from a preview hostname.
+ if((location.hostname||"").endsWith(".pages.dev")&&config.pagesAuthApproved!==true)return false;
  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(config.supabaseUrl))return false;
  // Explicitly isolate the fixture sandbox from a real identity flow.
  const authTest=new URLSearchParams(location.search).get("authTest")==="1";
@@ -49,6 +52,7 @@ function lockAccount(message=""){
  if(message)gate?.notice(message);
 }
 async function refreshVerified(){
+ if(!configAllowed()){lockAccount();return}
  const current=++generation;
  try{
   const user=await adapter.getVerifiedUser();
@@ -60,10 +64,18 @@ async function refreshVerified(){
  }
 }
 async function initializeAuth(){
- if(adapter||!configAllowed())return;
+ if(!configAllowed()){
+  lockAccount();
+  $("accountForm").hidden=true;
+  $("accountDialog").querySelector(".auth-status").hidden=false;
+  return;
+ }
  if(!devAllowed()&&!gate){gate=createAccountPrivacyGate(document,{onLogin:()=>openAccess("login"),onSignup:()=>openAccess("signup")});lockAccount()}
+ if(adapter){await refreshVerified();return}
+ const current=++generation;
  try{
   const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2.90.0");
+  if(current!==generation||!configAllowed())return;
   const client=createClient(config.supabaseUrl,config.publishableKey,{
    auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true,flowType:"pkce",
     storageKey:"mi-congregacion-holoteles-auth"}
@@ -82,6 +94,7 @@ async function initializeAuth(){
 async function showVerified(user){
  // Identity alone cannot unlock. A same-origin Core server must decide.
  lockAccount();
+ if(!configAllowed())return;
  const ticket=generation;
  if(devAllowed()){
   // DEV identity feedback only; do NOT unlock private shell or assert membership.
@@ -96,9 +109,10 @@ async function showVerified(user){
   info.textContent="Comprobando vinculación de congregación…";
   try{
    const {data}=await authClient.auth.getSession();
+   if(ticket!==generation||!devAllowed()||!configAllowed())return;
    const token=data?.session?.access_token;
    if(!token)throw Error("no token");
-   const result=await fetch("/api/dev/membership-status",{headers:{authorization:"Bearer "+token},cache:"no-store"});
+   const result=await fetch("/api/dev/membership-status",{headers:{authorization:"Bearer "+token},cache:"no-store",redirect:"error"});
    const body=await result.json();
    if(ticket!==generation||!devAllowed())return;
    info.textContent=body.state==="membership_found"?"Existe una vinculación activa. Acceso privado aún no autorizado.":body.state==="not_linked"?"Cuenta verificada. Todavía no tienes una congregación vinculada.":"No se pudo comprobar la vinculación. Tu sesión sigue protegida.";
@@ -109,7 +123,7 @@ async function showVerified(user){
  }
  if(!configAllowed())return;
  try{
-  const response=await fetch("/api/congregation/access",{method:"GET",credentials:"same-origin",cache:"no-store",headers:{"accept":"application/json"}});
+  const response=await fetch("/api/congregation/access",{method:"GET",credentials:"same-origin",cache:"no-store",headers:{"accept":"application/json"},redirect:"error"});
   if(ticket!==generation||devAllowed()||!configAllowed())return;
   if(!response.ok)return;
   const result=await response.json();
@@ -134,7 +148,7 @@ $("accountDialog").addEventListener("close",()=>{$("authPassword").value="";show
 $("devModeToggle").addEventListener("change",()=>{void initializeAuth()});
 window.addEventListener("mi-congregacion:dev-change",()=>{void initializeAuth()});
 $("accountForm").addEventListener("submit",async event=>{
- event.preventDefault();if(!adapter||busy)return;
+ event.preventDefault();if(!adapter||busy||!configAllowed())return;
  busy=true;$("submitAccount").disabled=true;showStatus(safeMessage("loading"));
  try{
   const email=$("authEmail").value,password=$("authPassword").value;
@@ -144,13 +158,14 @@ $("accountForm").addEventListener("submit",async event=>{
   }else{
    const current=++generation;
    const user=await adapter.signIn({email,password});
+   if(current!==generation||!configAllowed())return;
    if(user)await showVerified(user);
   }
  }catch{showStatus(safeMessage("error"))}
  finally{$("authPassword").value="";busy=false;$("submitAccount").disabled=false}
 });
 $("recoverAccount").addEventListener("click",async()=>{
- if(!adapter||busy)return;
+ if(!adapter||busy||!configAllowed())return;
  busy=true;try{await adapter.recover({email:$("authEmail").value,redirectTo:location.origin});showStatus(safeMessage("recovered"))}
  catch{showStatus(safeMessage("error"))}
  finally{busy=false}

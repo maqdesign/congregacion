@@ -9,8 +9,9 @@ test("access guidance scripts parse",()=>{assert.doesNotThrow(()=>new vm.Script(
 test("normal unsigned state has a standalone access page instead of empty routes",()=>{
  assert.match(html,/id="normalAccessGuide"/);
  assert.match(html,/id="openAccessGuideAccount"/);
- assert.match(html,/body:not\(\.dev-fixture-active\):not\(\.auth-locked\) main>#tablero/);
- assert.match(html,/body:not\(\.dev-fixture-active\):not\(\.auth-locked\) \.bottom/);
+ assert.match(html,/<body class="access-unlinked">/);
+ assert.match(html,/body\.access-unlinked:not\(\.dev-fixture-active\):not\(\.auth-locked\) main>#tablero/);
+ assert.match(html,/body\.access-unlinked:not\(\.dev-fixture-active\):not\(\.auth-locked\) \.bottom/);
  assert.match(script,/main section\[id=tablero\],main section\[id=agenda\],main section\[id=yo\]/);
 });
 test("unlinked DEV mode shows only guided identity and invite steps",()=>{

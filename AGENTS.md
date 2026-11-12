@@ -1,5 +1,10 @@
 # Codex · Mi Congregación
 
+## Alcance vigente · 2026-11-12
+
+El objetivo explícito del usuario autoriza trabajar y hacer pushes en `chore/cloudflare-pages-private-preview-20261112` para previews continuas mediante la integración GitHub→Pages existente. PR funcional de referencia #18. Conservar Access y producción Pages desactivada; no merge, Actions, DNS, Supabase compartido, Auth/RLS real, datos privados ni gastos. Esta autorización actualiza las restricciones históricas de preview que siguen más abajo. Normal privado continúa cerrado. Evidencia vigente: `docs/PREVIEW-MVP-HANDOFF-2026-11-12.md`.
+
+
 Este repositorio tiene una **meta autónoma vigente**: leer y ejecutar `docs/AUTONOMOUS-MVP-GOAL.md`. Antes de modificar código, leer también `docs/CHATGPT-CONTEXT.md` y `README.md`. Si los archivos faltan en el checkout, verificar rama y remotos; la rama de continuidad es `feat/dev-membership-status-ui-20261028`, no `main` ni una rama `work` desactualizada. No descartar cambios locales.
 
 ## Cómo trabajar

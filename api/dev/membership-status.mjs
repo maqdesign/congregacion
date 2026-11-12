@@ -8,8 +8,11 @@ export async function handleMembershipStatus(request,{fetcher=fetch}={}){
  if(!token||token.length>8192)return response(401,{state:"signed_out"});
  try{
   const headers={apikey:publicKey,authorization:"Bearer "+token};
-  const auth=await fetcher(authority+"/auth/v1/user",{headers,cache:"no-store"});
-  if(!auth.ok)return response(401,{state:"signed_out"});
+  // Workers supports manual redirects; never forward credentials to a redirect.
+  // Any 3xx is not ok and is reported as unavailable below.
+  const auth=await fetcher(authority+"/auth/v1/user",{headers,cache:"no-store",redirect:"manual"});
+  if(auth.status===401||auth.status===403)return response(401,{state:"signed_out"});
+  if(!auth.ok)return response(503,{state:"unavailable"});
   const user=await auth.json();
   if(typeof user.id!=="string"||!user.id)return response(401,{state:"signed_out"});
   const url=new URL(authority+"/rest/v1/holoteles_organization_memberships");
@@ -17,7 +20,7 @@ export async function handleMembershipStatus(request,{fetcher=fetch}={}){
   url.searchParams.set("user_id","eq."+user.id);
   url.searchParams.set("primary_membership","eq.true");
   url.searchParams.set("limit","2");
-  const result=await fetcher(url,{headers,cache:"no-store"});
+  const result=await fetcher(url,{headers,cache:"no-store",redirect:"manual"});
   if(!result.ok)return response(503,{state:"unavailable"});
   const rows=await result.json();
   if(!Array.isArray(rows)||rows.length>1)return response(503,{state:"unavailable"});

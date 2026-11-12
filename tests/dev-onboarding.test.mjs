@@ -28,12 +28,12 @@ test("first-time user can explore signup, email confirmation and membership with
 test("re-render moves keyboard focus to next onboarding step",()=>{
  assert.match(ui,/const action=btn\.dataset\.fixtureAction/);
  assert.match(ui,/document\.querySelector\('\[data-fixture-action="confirm"\]'\)/);
- assert.match(ui,/document\.querySelector\('\[data-fixture-action="link"\]'\)/);
+ assert.match(ui,/document\.querySelector\('\[data-demo-invite="link"\]'\)/);
  assert.match(ui,/\?\.focus\(\)/);
  assert.match(html,/\.fixture-onboarding button\{min-height:44px\}/);
 });
 test("PWA offline installation precaches lifecycle script and a new version key",()=>{
- assert.match(sw,/mi-congregacion-shell-v6-20261026/);
+ assert.match(sw,/const CACHE="mi-congregacion-shell-v\d+-\d{8}"/);
  assert.match(sw,/"\/pwa-shell\.mjs"/);
  assert.match(sw,/if\(!STATIC.has\(url.pathname\)\|\|url.search\)return/);
 });

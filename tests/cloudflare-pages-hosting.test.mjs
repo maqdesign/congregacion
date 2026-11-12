@@ -4,6 +4,10 @@ import { readFileSync } from "node:fs";
 import { onRequest } from "../functions/api/dev/membership-status.js";
 
 const routes=JSON.parse(readFileSync(new URL("../app/_routes.json",import.meta.url),"utf8"));
+test("the hosting branch does not trigger an additional Vercel deployment",()=>{
+ const config=JSON.parse(readFileSync(new URL("../app/vercel.json",import.meta.url),"utf8"));
+ assert.deepEqual(config.git.deploymentEnabled,{"chore/cloudflare-pages-private-preview-20261112":false});
+});
 
 test("Pages invokes Functions only for the DEV membership diagnostic",()=>{
  assert.equal(routes.version,1);
@@ -16,6 +20,10 @@ test("Cloudflare adapter rejects unauthenticated reads without querying Core",as
  const response=await onRequest({request});
  assert.equal(response.status,401);
  assert.equal(response.headers.get("cache-control"),"no-store, private");
+ assert.equal(response.headers.get("referrer-policy"),"strict-origin-when-cross-origin");
+ assert.equal(response.headers.get("x-frame-options"),"DENY");
+ assert.equal(response.headers.get("permissions-policy"),"camera=(), microphone=(), geolocation=()");
+ assert.equal(response.headers.get("vary"),"Authorization");
  assert.deepEqual(await response.json(),{state:"signed_out"});
 });
 
@@ -23,6 +31,7 @@ test("Cloudflare adapter rejects unsupported HTTP methods",async()=>{
  const request=new Request("https://private-preview.example/api/dev/membership-status",{method:"POST"});
  const response=await onRequest({request});
  assert.equal(response.status,405);
+ assert.equal(response.headers.get("allow"),"GET");
  assert.deepEqual(await response.json(),{state:"unavailable"});
 });
 

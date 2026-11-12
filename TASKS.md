@@ -1,5 +1,10 @@
 # Mi Congregación · Tareas activas
 
+## Alcance vigente · 2026-11-12
+
+El objetivo explícito del usuario autoriza trabajar y hacer pushes en `chore/cloudflare-pages-private-preview-20261112` para previews continuas mediante la integración GitHub→Pages existente. PR funcional de referencia #18. Conservar Access y producción Pages desactivada; no merge, Actions, DNS, Supabase compartido, Auth/RLS real, datos privados ni gastos. Esta autorización actualiza las restricciones históricas de preview que siguen más abajo. Normal privado continúa cerrado. Evidencia vigente: `docs/PREVIEW-MVP-HANDOFF-2026-11-12.md`.
+
+
 Actualizado: 2026-11-12. Rama de hosting `chore/cloudflare-pages-private-preview-20261112`. Continuidad MVP en `feat/dev-membership-status-ui-20261028`, PR #18 DRAFT. La auditoría completa y referencias están en `docs/CLOUDFLARE-PAGES-READINESS.md`.
 
 ## MC-HOST-001 · Migración gradual GitHub → Cloudflare Pages
@@ -57,3 +62,7 @@ Actualizado: 2026-11-12. Rama de hosting `chore/cloudflare-pages-private-preview
 - [x] **Producción sin cambios**: Vercel y dominios originales, Supabase/Auth/RLS intactos; `main` desactivado para deploy en nuevo Pages.
 
 **Estado:** PREVIEW DESPLEGADA + ACCESS CONFIGURADO, **pendiente QA HTTP/browser**. No datos privados publicados intencionalmente. Documentación actualizada con prefijo `[CF-Pages-Skip]` para no disparar builds de preview innecesarios.
+
+## Iteración MVP / preview continua · 2026-11-12
+
+Suite completa: 27 archivos / 134 casos PASS, cero FAIL/SKIP. Navegador local: 386 PASS; PWA: 15 PASS; workerd: 12 PASS. Se corrigieron cinco fallos históricos y regresiones, UX ES/EN responsive, foco, Auth cerrado en Pages, caché pública y errores upstream. Ver archivos, diagnóstico, límites, comandos y pendientes en `docs/PREVIEW-MVP-HANDOFF-2026-11-12.md`. Access y configuración GitHub→Pages verificados por API; HTTP real pendiente por rechazo CONNECT del proxy, sin prueba de sesión propietaria. No declarar Access HTTP PASS. Publicación y SHA se registrarán tras build. Producción NO-GO; contratos privados/callbacks y revisión Core pendientes.

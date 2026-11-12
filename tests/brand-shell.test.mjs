@@ -26,5 +26,6 @@ test("no fake content, unauthorized data or third-party font request added",()=>
  assert.doesNotMatch(html,/@import|fonts\.googleapis|<script[^>]+src="https?:/i);
  assert.match(html,/<script type="module" src="\/account-ui\.mjs"><\/script>/);
  assert.match(html,/Congregación no vinculada/);
- assert.match(html,/Sin datos conectados/);
+ assert.match(html,/Sin datos privados conectados/);
+ assert.doesNotMatch(html,/Versión inicial en producción/);
 });

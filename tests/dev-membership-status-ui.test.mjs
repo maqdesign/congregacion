@@ -38,3 +38,12 @@ test("membership section uses accessible label without duplicate heading ID",()=
   assert.doesNotMatch(html,/id="dev-membership-title"/);
  }
 });
+test("English membership states preserve the same safe model and sample disclosure",()=>{
+ for(const state of DEMO_MEMBERSHIP_STATES){
+  const model=getDemoMembershipView(state,"en"),html=renderDemoMembershipCard(state,"en");
+  assert.equal(model.state,state);assert.equal(model.authorized,false);assert.equal(model.mayRequest,false);
+  assert.match(html,/Sample data · No real connection/);
+  assert.match(html,/does not change your account or grant permissions/);
+ }
+ assert.equal(getDemoMembershipView("permission_limited","en").title,"No calendar permission");
+});

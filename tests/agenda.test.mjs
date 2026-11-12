@@ -15,3 +15,19 @@ test("no se mezcla una organización distinta ni datos no clasificados",()=>{ass
 test("mis asignaciones solo con identidad verificada, entrega privada y persona coincidente",()=>{const a={...pub,id:"assign-1",sourceApp:"reuniones",category:"asignaciones",date:"2027-01-04",time:"18:30",personId:"person-a",personalDelivery:true,title:"Participación"};assert.equal(projectAgenda({context:ctx,activities:[a],filter:"mis_asignaciones"}).length,1);assert.equal(projectAgenda({context:{...ctx,verifiedPersonId:null},activities:[a],filter:"mis_asignaciones"}).length,0);assert.equal(projectAgenda({context:ctx,activities:[{...a,personId:"person-b"}],filter:"mis_asignaciones"}).length,0);assert.equal(projectAgenda({context:ctx,activities:[{...a,personalDelivery:false}],filter:"mis_asignaciones"}).length,0)});
 test("reuniones, servicio y eventos filtrados por categoría",()=>{const rows=[{...pub,id:"event-1",sourceApp:"eventos",category:"eventos",date:"2027-01-12",time:"09:00",title:"Visita"},{...pub,id:"service-1",sourceApp:"servicio",category:"servicio",date:"2027-01-13",time:"08:00",title:"Salida"}];assert.equal(projectAgenda({context:ctx,activities:rows,filter:"todo"}).length,2);assert.equal(projectAgenda({context:ctx,activities:rows,filter:"servicio"}).length,1);assert.equal(projectAgenda({context:ctx,activities:rows,filter:"reuniones"}).length,0)});
 test("rangos no válidos y excesivos fallan de forma segura",()=>{assert.throws(()=>expandPublishedSchedules({context:ctx,from:"2027-01-01",to:"2028-12-31"}),RangeError);assert.throws(()=>expandPublishedSchedules({context:ctx,from:"2027-02-30",to:"2027-03-01"}),TypeError)});
+test("tres versiones ambiguas no resucitan una versión según el orden de entrega",()=>{
+ const a={...future,id:'a'},b={...future,id:'b'},c={...future,id:'c'};
+ for(const schedules of [[a,b,c],[c,a,b],[b,c,a],[a,b,base],[base,b,a],[b,base,a]]){
+  assert.deepEqual(currentSchedule({context:ctx,schedules,onDate:'2027-01-04'}),[]);
+ }
+ const next={...future,id:'next',effectiveFrom:'2027-01-11',time:'20:00'};
+ assert.equal(currentSchedule({context:ctx,schedules:[a,b,next],onDate:'2027-01-11'})[0].time,'20:00');
+ assert.equal(currentSchedule({context:ctx,schedules:[next,a,b],onDate:'2027-01-11'})[0].time,'20:00');
+});
+test("cambiar solo el lugar conserva la hora; excepciones duplicadas permanecen cerradas",()=>{
+ const changed={...pub,id:'place-change',sourceApp:'reuniones',scheduleId:future.id,date:'2027-01-04',kind:'changed',place:'Lugar sintético alternativo'};
+ const args={context:ctx,schedules:[future],exceptions:[changed],onDate:'2027-01-04'};
+ const [row]=currentSchedule(args);assert.equal(row.time,'18:30');assert.equal(row.place,changed.place);assert.equal(row.changed,true);
+ assert.deepEqual(currentSchedule({...args,exceptions:[changed,{...changed,id:'duplicate'}]}),[]);
+ assert.equal(currentSchedule({...args,exceptions:[{...changed,time:'25:00'}]})[0].place,future.place);
+});

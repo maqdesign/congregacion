@@ -68,7 +68,7 @@ export function expandPublishedSchedules({context, schedules = [], exceptions = 
   const publishedExceptions = exceptions.filter(e =>
     allowedRecord(e, context) && typeof e.scheduleId === "string" &&
     validDate(e.date) && ["cancelled", "changed"].includes(e.kind) &&
-    (e.kind === "cancelled" || TIME.test(e.time ?? ""))
+    (e.kind === "cancelled" || e.time == null || TIME.test(e.time))
   );
   const result = [];
   for (const date of dates) {
@@ -78,11 +78,12 @@ export function expandPublishedSchedules({context, schedules = [], exceptions = 
           !s.weekdays.includes(localWeekday(date))) continue;
       const series = String(s.seriesId || s.id);
       const old = bySeries.get(series);
-      // Si hay dos versiones con igual vigencia, no adivinar cuál prevalece.
-      if (!old || s.effectiveFrom > old.effectiveFrom) bySeries.set(series, s);
-      else if (s.effectiveFrom === old.effectiveFrom && s.id !== old.id) bySeries.set(series, null);
+      // Preserve the winning date even after a conflict: a later row must not
+      // resurrect an ambiguous version (or an older superseded schedule).
+      if (!old || s.effectiveFrom > old.date) bySeries.set(series, {date:s.effectiveFrom, schedule:s});
+      else if (s.effectiveFrom === old.date) old.schedule = null;
     }
-    for (const s of bySeries.values()) {
+    for (const {schedule:s} of bySeries.values()) {
       if (!s) continue;
       const matching = publishedExceptions.filter(e => e.scheduleId === s.id && e.date === date);
       if (matching.length > 1) continue; // conflicto: no mostrar horario potencialmente falso
