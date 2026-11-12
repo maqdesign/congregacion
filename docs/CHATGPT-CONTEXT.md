@@ -55,3 +55,11 @@ Core PR #33 continúa DRAFT. SQL **review-only** añadió comprobación `members
 - **PREVIEW NO-GO:** Pages previews públicas por defecto; Access de previews no cubre automáticamente hostname base. No se creó proyecto ni deployment hasta garantizar bloqueo previo de `<proyecto>.pages.dev` y `*.<proyecto>.pages.dev` y verificar visita anónima denegada. No compartir URL inexistente.
 - Callbacks de Auth usan `location.origin` y requieren aprobación Core antes de permitir nuevo origen; `allowProduction:false`. `localStorage`, `sessionStorage` y SW son por origen, no se transfieren al pasar Vercel→Pages. Mantener Vercel como rollback sin cambiar DNS.
 - Siguiente: Codex ejecutar suite completa y QA adapter; Core/Cloudflare demostrar protección de Pages previa al primer deploy. La integración real sigue sujeta a P0 Core #27/#33.
+
+### Cloudflare Pages — primer preview publicado (2026-11-12)
+- Decisión actualizada por usuario: avanzar con el patrón Grafo/Servicio, mantener preview con Access, sin exigir privacidad perfecta del shell ficticio. **No se autorizan datos privados reales, cambios de Supabase/Auth/RLS ni producción.**
+- Proyecto Pages `mi-congregacion-preview`, GitHub `maqdesign/congregacion`, output `app`, sin build, `main` prod disabled, previews custom rama `chore/cloudflare-pages-private-preview-20261112`.
+- Access app `df3601f7-18cf-4392-9a8b-a168dff34adb` con destinos hostname base + wildcard y política reusable owner `f01794fc-82d3-4e2b-adf2-6760ebc8f9a0` (reutilizada de Grafo). Configuración comprobada por Cloudflare API.
+- **Preview deployment SUCCESS:** ID `361c1ca3-4b6e-44c4-bbad-6af39e8f162c`, commit `fbb3b334ac4c60227e427e2e7c9b905f999f356a`; Worker compilado, `_routes.json` aceptado, 1 regla headers, 21 assets. URL `https://361c1ca3.mi-congregacion-preview.pages.dev`; alias `https://chore-cloudflare-pages-priva.mi-congregacion-preview.pages.dev`.
+- **NO probado:** HTTP status de visita anónima, flujo autorizado en navegador, runtime del endpoint DEV, PWA Safari, suite Node completa. La herramienta web no pudo abrir las URLs, pero no reportó status. No declarar 302/403 verificado.
+- **Siguiente:** QA en navegador autenticado y sin sesión, `node --test tests/*.test.mjs` en Codex Cloud. Sin despliegue a producción. Ver `TASKS.md` y `docs/CLOUDFLARE-PAGES-READINESS.md`.
